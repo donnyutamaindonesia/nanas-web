@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>菠萝荟 · 邻里集市</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, "PingFang SC", "Noto Sans SC", sans-serif;
+    background: #faf8f4;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ── 顶部品牌区 ── */
+  .hero {
+    width: 100%;
+    background: #fff;
+    padding: 36px 24px 28px;
+    text-align: center;
+    border-bottom: 1px solid #ede9e2;
+  }
+
+  .brand-icon {
+    font-size: 48px;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  .brand-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: 0.02em;
+  }
+
+  .brand-sub {
+    font-size: 13px;
+    color: #888;
+    margin-top: 4px;
+  }
+
+  /* 店铺标签（可选，URL传参） */
+  .store-badge {
+    display: inline-block;
+    margin-top: 14px;
+    background: #fef3e8;
+    color: #c96442;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid #f5dcc8;
+  }
+
+  /* ── 三个主入口 ── */
+  .actions {
+    width: 100%;
+    max-width: 420px;
+    padding: 24px 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .action-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+    border: 1.5px solid #ede9e2;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    cursor: pointer;
+  }
+
+  .action-card:active {
+    border-color: #c96442;
+    box-shadow: 0 0 0 3px rgba(201,100,66,0.08);
+  }
+
+  .action-icon {
+    font-size: 32px;
+    line-height: 1;
+    flex-shrink: 0;
+    width: 48px;
+    text-align: center;
+  }
+
+  .action-text { flex: 1; }
+
+  .action-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+
+  .action-desc {
+    font-size: 13px;
+    color: #888;
+    margin-top: 3px;
+    line-height: 1.5;
+  }
+
+  .action-arrow {
+    font-size: 18px;
+    color: #ccc;
+    flex-shrink: 0;
+  }
+
+  /* 主推按钮高亮 */
+  .action-card.primary {
+    background: #c96442;
+    border-color: #c96442;
+  }
+
+  .action-card.primary .action-title,
+  .action-card.primary .action-desc,
+  .action-card.primary .action-arrow {
+    color: #fff;
+  }
+
+  .action-card.primary .action-desc {
+    color: rgba(255,255,255,0.8);
+  }
+
+  /* ── 分隔线 ── */
+  .divider {
+    width: calc(100% - 32px);
+    max-width: 420px;
+    text-align: center;
+    font-size: 12px;
+    color: #bbb;
+    margin: 20px 0 0;
+    position: relative;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 38%;
+    height: 1px;
+    background: #ede9e2;
+  }
+
+  .divider::before { left: 0; }
+  .divider::after { right: 0; }
+
+  /* ── 邻里微卖家区 ── */
+  .micro-sellers {
+    width: 100%;
+    max-width: 420px;
+    padding: 16px 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .micro-title {
+    font-size: 13px;
+    color: #888;
+    font-weight: 600;
+    padding: 0 4px;
+  }
+
+  .seller-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  .seller-chip {
+    flex: 1;
+    background: #fff;
+    border: 1.5px solid #ede9e2;
+    border-radius: 12px;
+    padding: 14px 12px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .seller-chip:active {
+    border-color: #c96442;
+  }
+
+  .seller-emoji { font-size: 24px; display: block; margin-bottom: 4px; }
+  .seller-label { font-size: 12px; color: #555; font-weight: 600; }
+
+  /* ── 底部 ── */
+  .footer {
+    margin-top: 32px;
+    padding: 0 16px 40px;
+    text-align: center;
+    font-size: 12px;
+    color: #bbb;
+    line-height: 1.8;
+  }
+
+  .footer a { color: #c96442; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<!-- 顶部品牌 -->
+<div class="hero">
+  <div class="brand-icon">🍍</div>
+  <div class="brand-name">菠萝荟</div>
+  <div class="brand-sub">邻里 AI 消费生态圈</div>
+  <div class="store-badge" id="storeBadge" style="display:none"></div>
+</div>
+
+<!-- 三个主入口 -->
+<div class="actions">
+
+  <a class="action-card primary" href="/index.html">
+    <div class="action-icon">💬</div>
+    <div class="action-text">
+      <div class="action-title">问 Nanas AI</div>
+      <div class="action-desc">问价格、找东西、聊社区，一句话搞定</div>
+    </div>
+    <div class="action-arrow">›</div>
+  </a>
+
+  <a class="action-card" href="https://nanasclaw.com" target="_blank">
+    <div class="action-icon">🦞</div>
+    <div class="action-text">
+      <div class="action-title">菠萝爪比价</div>
+      <div class="action-desc">附近便利店实时价格，谁家便宜一看就知道</div>
+    </div>
+    <div class="action-arrow">›</div>
+  </a>
+
+  <a class="action-card" href="#sellers" id="sellersBtn">
+    <div class="action-icon">🏪</div>
+    <div class="action-text">
+      <div class="action-title">邻里集市</div>
+      <div class="action-desc">表姐的粽子、阿婆的手工、邻居的闲置</div>
+    </div>
+    <div class="action-arrow">›</div>
+  </a>
+
+</div>
+
+<!-- 分隔线 -->
+<div class="divider">你也可以在这里卖东西</div>
+
+<!-- 邻里微卖家 -->
+<div class="micro-sellers" id="sellers">
+  <div class="seller-row">
+    <a class="seller-chip" href="#register?type=food">
+      <span class="seller-emoji">🍱</span>
+      <span class="seller-label">卖家常菜</span>
+    </a>
+    <a class="seller-chip" href="#register?type=craft">
+      <span class="seller-emoji">🧶</span>
+      <span class="seller-label">卖手工品</span>
+    </a>
+    <a class="seller-chip" href="#register?type=idle">
+      <span class="seller-emoji">📦</span>
+      <span class="seller-label">卖闲置物</span>
+    </a>
+  </div>
+  <div class="seller-row">
+    <a class="seller-chip" href="#register?type=senior">
+      <span class="seller-emoji">👴</span>
+      <span class="seller-label">银发分享</span>
+    </a>
+    <a class="seller-chip" href="#register?type=other">
+      <span class="seller-emoji">✨</span>
+      <span class="seller-label">其他好物</span>
+    </a>
+  </div>
+</div>
+
+<!-- 底部 -->
+<div class="footer">
+  <a href="https://nanas.com.cn">nanas.com.cn</a> · <a href="https://nanasclaw.com">nanasclaw.com</a><br>
+  菠萝荟 · 帮邻里把好东西卖给身边人
+</div>
+
+<script>
+  // 从 URL 参数读取店铺信息
+  const params = new URLSearchParams(location.search);
+  const store = params.get('store');
+  const badge = document.getElementById('storeBadge');
+  if (store) {
+    badge.textContent = '📍 ' + decodeURIComponent(store);
+    badge.style.display = 'inline-block';
+  }
+
+  // 点击卖家入口：暂时跳转到 AI 对话，后续接注册流程
+  document.querySelectorAll('.seller-chip').forEach(el => {
+    el.addEventListener('click', e => {
+      e.preventDefault();
+      const type = new URLSearchParams(el.href.split('#register?')[1]).get('type');
+      const labels = {food:'家常菜',craft:'手工品',idle:'闲置物',senior:'银发分享',other:'好物'};
+      const msg = encodeURIComponent('我想在菠萝荟卖' + (labels[type]||'东西'));
+      location.href = '/index.html?q=' + msg;
+    });
+  });
+</script>
+
+</body>
+</html>
