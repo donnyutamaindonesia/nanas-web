@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>随手算啦 · 社区AI省钱平台</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--orange:#e8733a;--orange-light:#f5a06a;--bg:#faf8f5;--card:#fff;--text:#1a1a1a;--sub:#888}
+body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ── 顶部 ── */
+.header{background:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f0ede8;position:sticky;top:0;z-index:100}
+.logo{font-size:18px;font-weight:800;color:var(--orange);letter-spacing:1px}
+.logo span{font-size:11px;color:#bbb;font-weight:400;margin-left:6px;letter-spacing:0}
+.header-tag{background:#fdf0e8;color:var(--orange);font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px}
+
+/* ── Hero ── */
+.hero{background:linear-gradient(135deg,#f5a06a 0%,var(--orange) 100%);padding:36px 20px 32px;text-align:center;color:#fff}
+.hero h1{font-size:32px;font-weight:800;letter-spacing:2px;margin-bottom:8px}
+.hero .sub{font-size:15px;opacity:.9;margin-bottom:20px}
+.hero .badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:100px;padding:6px 16px;font-size:13px}
+
+/* ── 搜索区 ── */
+.search-section{padding:20px 16px 0;margin-top:-1px}
+.search-card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 4px 20px rgba(0,0,0,.08)}
+.search-label{font-size:13px;color:var(--sub);margin-bottom:10px}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.chip{padding:8px 16px;border-radius:100px;font-size:14px;font-weight:500;cursor:pointer;border:1.5px solid #e8e5e0;background:#fff;color:#444;transition:all .15s}
+.chip.active,.chip:hover{background:var(--orange);color:#fff;border-color:var(--orange)}
+.search-input-row{display:flex;gap:8px}
+.search-input{flex:1;border:1.5px solid #e8e5e0;border-radius:12px;padding:10px 14px;font-size:15px;outline:none;font-family:inherit}
+.search-input:focus{border-color:var(--orange)}
+.search-btn{background:var(--orange);color:#fff;border:none;border-radius:12px;padding:10px 20px;font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap}
+
+/* ── 结果区 ── */
+.results-section{padding:16px}
+.section-title{font-size:13px;color:var(--sub);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.section-title span{background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:600}
+
+.store-card{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;border:2px solid transparent;transition:all .2s;cursor:pointer}
+.store-card.best{border-color:var(--orange);position:relative}
+.store-card.best::before{content:"AI推荐";position:absolute;top:-10px;left:16px;background:var(--orange);color:#fff;font-size:11px;font-weight:700;padding:2px 10px;border-radius:100px}
+
+.store-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.store-name{font-size:16px;font-weight:700}
+.store-dist{font-size:13px;color:var(--sub)}
+.store-price-row{display:flex;align-items:baseline;gap:4px}
+.price-big{font-size:28px;font-weight:800;color:var(--orange)}
+.price-unit{font-size:14px;color:var(--sub)}
+.price-original{font-size:13px;color:#bbb;text-decoration:line-through;margin-left:4px}
+.store-tags{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.tag{padding:3px 10px;border-radius:100px;font-size:12px;font-weight:500}
+.tag-gift{background:#fdf0e8;color:var(--orange)}
+.tag-stock{background:#e8f5e9;color:#2e7d32}
+.tag-group{background:#e8eafd;color:#3949ab}
+.store-footer{display:flex;gap:8px;margin-top:12px}
+.btn-nav{flex:1;border:1.5px solid var(--orange);color:var(--orange);background:#fff;border-radius:10px;padding:9px;font-size:14px;font-weight:600;cursor:pointer}
+.btn-group{flex:1;background:var(--orange);color:#fff;border:none;border-radius:10px;padding:9px;font-size:14px;font-weight:600;cursor:pointer}
+
+/* ── AI分析框 ── */
+.ai-box{background:linear-gradient(135deg,#fff8f0,#ffeee0);border:1.5px solid #f5d0b0;border-radius:16px;padding:14px 16px;margin-bottom:16px}
+.ai-box-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.ai-icon{width:28px;height:28px;background:var(--orange);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px}
+.ai-title{font-size:14px;font-weight:700;color:var(--orange)}
+.ai-text{font-size:14px;color:#444;line-height:1.6}
+
+/* ── 底部栏 ── */
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #f0ede8;padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:flex;gap:10px}
+.bottom-bar .btn-main{flex:1;background:var(--orange);color:#fff;border:none;border-radius:12px;padding:13px;font-size:16px;font-weight:700;cursor:pointer}
+.bottom-bar .btn-sec{background:#fdf0e8;color:var(--orange);border:none;border-radius:12px;padding:13px 16px;font-size:14px;font-weight:600;cursor:pointer}
+.page-pad{height:90px}
+
+/* ── Loading ── */
+.loading{display:none;text-align:center;padding:30px;color:var(--sub)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--orange);margin:0 3px;animation:bounce .8s infinite}
+.dot:nth-child(2){animation-delay:.15s}
+.dot:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-8px);opacity:1}}
+
+/* ── 空状态 ── */
+.empty{text-align:center;padding:40px 20px;color:var(--sub)}
+.empty-icon{font-size:48px;margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">随手算啦 <span>shopssl.cn</span></div>
+  <div class="header-tag">AI比价</div>
+</div>
+
+<div class="hero">
+  <h1>随手算一下</h1>
+  <div class="sub">附近便宜在哪里，AI帮你找</div>
+  <div class="badge">🤖 AI实时比价 · 越算越省</div>
+</div>
+
+<div class="search-section">
+  <div class="search-card">
+    <div class="search-label">选择商品类型</div>
+    <div class="chip-row">
+      <div class="chip active" onclick="selectChip(this,'大米')">🌾 大米</div>
+      <div class="chip" onclick="selectChip(this,'食用油')">🫙 食用油</div>
+      <div class="chip" onclick="selectChip(this,'酱油')">🍶 酱油</div>
+      <div class="chip" onclick="selectChip(this,'盐')">🧂 盐</div>
+      <div class="chip" onclick="selectChip(this,'椰子水')">🥥 椰子水</div>
+      <div class="chip" onclick="selectChip(this,'饮料')">🧃 饮料</div>
+    </div>
+    <div class="search-input-row">
+      <input class="search-input" id="searchInput" placeholder="输入商品，如：5kg大米" value="5kg大米">
+      <button class="search-btn" onclick="doSearch()">AI比价</button>
+    </div>
+  </div>
+</div>
+
+<div class="results-section">
+  <div class="loading" id="loading">
+    <div><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+    <div style="margin-top:8px;font-size:14px">AI正在比价中…</div>
+  </div>
+
+  <div id="results" style="display:none">
+    <div class="ai-box">
+      <div class="ai-box-header">
+        <div class="ai-icon">🤖</div>
+        <div class="ai-title">AI分析</div>
+      </div>
+      <div class="ai-text" id="aiText"></div>
+    </div>
+
+    <div class="section-title">附近门店比价 <span id="resultCount"></span></div>
+    <div id="storeList"></div>
+  </div>
+
+  <div class="empty" id="empty">
+    <div class="empty-icon">🏪</div>
+    <div>选择商品，AI帮你找最近最便宜的店</div>
+  </div>
+</div>
+
+<div class="page-pad"></div>
+
+<div class="bottom-bar">
+  <button class="btn-sec" onclick="doSearch()">🔄 刷新比价</button>
+  <button class="btn-main" onclick="joinGroup()">📲 进社区群 领椰子水</button>
+</div>
+
+<script>
+let selectedItem = '大米'
+
+const STORE_DATA = {
+  '大米': [
+    {name:'楼下SSSL便利店',dist:'步行3分钟',price:28,original:34,unit:'5kg',tags:['🥥 送椰子水','✅ 有货','👥 进群享价'],best:true,tip:'比美团便宜6元，还有椰子水赠品，强烈推荐'},
+    {name:'联华超市·嘉定店',dist:'步行12分钟',price:31,original:34,unit:'5kg',tags:['✅ 有货'],best:false,tip:''},
+    {name:'朴朴前置仓',dist:'外卖30分钟',price:33,original:33,unit:'5kg',tags:['🛵 外卖配送'],best:false,tip:''},
+  ],
+  '食用油': [
+    {name:'楼下SSSL便利店',dist:'步行3分钟',price:42,original:52,unit:'5L',tags:['🎁 本周特惠','✅ 有货','👥 进群享价'],best:true,tip:'本周特惠价，比附近便宜10元'},
+    {name:'大润发·嘉定',dist:'开车8分钟',price:46,original:52,unit:'5L',tags:['✅ 有货'],best:false,tip:''},
+    {name:'朴朴前置仓',dist:'外卖30分钟',price:50,original:52,unit:'5L',tags:['🛵 外卖配送'],best:false,tip:''},
+  ],
+  '酱油': [
+    {name:'楼下SSSL便利店',dist:'步行3分钟',price:12,original:15,unit:'500ml',tags:['✅ 有货','👥 进群享价'],best:true,tip:'社区群专属价，比零售便宜3元'},
+    {name:'全家便利店',dist:'步行8分钟',price:14,original:15,unit:'500ml',tags:['✅ 有货'],best:false,tip:''},
+    {name:'朴朴前置仓',dist:'外卖30分钟',price:15,original:15,unit:'500ml',tags:['🛵 外卖配送'],best:false,tip:''},
+  ],
+  '盐': [
+    {name:'楼下SSSL便利店',dist:'步行3分钟',price:2,original:3,unit:'500g',tags:['✅ 有货'],best:true,tip:'最近最便宜，顺路买'},
+    {name:'全家便利店',dist:'步行8分钟',price:2.5,original:3,unit:'500g',tags:['✅ 有货'],best:false,tip:''},
+    {name:'朴朴前置仓',dist:'外卖30分钟',price:3,original:3,unit:'500g',tags:['🛵 外卖配送'],best:false,tip:''},
+  ],
+  '椰子水': [
+    {name:'楼下SSSL便利店',dist:'步行3分钟',price:0,original:8,unit:'瓶',tags:['🎁 进群免费领','👥 仅限群友'],best:true,tip:'进群即可免费领取，活动进行中'},
+    {name:'全家便利店',dist:'步行8分钟',price:8,original:8,unit:'瓶',tags:['✅ 有货'],best:false,tip:''},
+    {name:'朴朴前置仓',dist:'外卖30分钟',price:9,original:9,unit:'瓶',tags:['🛵 外卖配送'],best:false,tip:''},
+  ],
+  '饮料': [
+    {name:'楼下SSSL便利店',dist:'步行3分钟',price:3.5,original:5,unit:'瓶',tags:['✅ 有货','👥 进群享价'],best:true,tip:'群内活动价，比市场价便宜1.5元'},
+    {name:'全家便利店',dist:'步行8分钟',price:4.5,original:5,unit:'瓶',tags:['✅ 有货'],best:false,tip:''},
+    {name:'便利蜂',dist:'步行10分钟',price:5,original:5,unit:'瓶',tags:['✅ 有货'],best:false,tip:''},
+  ],
+}
+
+const AI_TIPS = {
+  '大米':'楼下便利店比外卖便宜¥6，走路3分钟还送椰子水，不用等配送强烈推荐 💪',
+  '食用油':'本周特惠，比附近所有渠道便宜最多¥10，囤货好时机 🛢️',
+  '酱油':'进社区群享专属价，比门市便宜¥3，每月用量多的话值得进群 🍶',
+  '盐':'这个真的走路买就行，最近最便宜，3分钟搞定 🧂',
+  '椰子水':'进群直接免费领！活动还在，赶紧扫码进群 🥥',
+  '饮料':'群友专享价比市价便宜30%，进群后每次购买都能享受 🧃',
+}
+
+function selectChip(el, item) {
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'))
+  el.classList.add('active')
+  selectedItem = item
+  document.getElementById('searchInput').value = item
+}
+
+function doSearch() {
+  document.getElementById('empty').style.display = 'none'
+  document.getElementById('results').style.display = 'none'
+  document.getElementById('loading').style.display = 'block'
+
+  const item = document.getElementById('searchInput').value.trim() || selectedItem
+  const key = Object.keys(STORE_DATA).find(k => item.includes(k)) || '大米'
+
+  setTimeout(() => {
+    document.getElementById('loading').style.display = 'none'
+    document.getElementById('results').style.display = 'block'
+
+    const stores = STORE_DATA[key]
+    document.getElementById('aiText').textContent = AI_TIPS[key] || 'AI分析完成，楼下便利店最优'
+    document.getElementById('resultCount').textContent = `找到${stores.length}家`
+
+    const list = document.getElementById('storeList')
+    list.innerHTML = stores.map((s,i) => `
+      <div class="store-card ${s.best?'best':''}" onclick="selectStore(${i})">
+        <div class="store-header">
+          <div class="store-name">${s.name}</div>
+          <div class="store-dist">📍 ${s.dist}</div>
+        </div>
+        <div class="store-price-row">
+          <div class="price-big">${s.price==0?'免费':'¥'+s.price}</div>
+          <div class="price-unit">/${s.unit}</div>
+          ${s.original!==s.price?`<div class="price-original">¥${s.original}</div>`:''}
+        </div>
+        <div class="store-tags">
+          ${s.tags.map(t=>`<span class="tag ${t.includes('群')?'tag-group':t.includes('送')||t.includes('免费')?'tag-gift':'tag-stock'}">${t}</span>`).join('')}
+        </div>
+        <div class="store-footer">
+          <button class="btn-nav" onclick="event.stopPropagation();navigate('${s.name}')">🗺 导航</button>
+          <button class="btn-group" onclick="event.stopPropagation();joinGroup()">📲 进群</button>
+        </div>
+      </div>
+    `).join('')
+  }, 1200)
+}
+
+function selectStore(i){}
+function navigate(name){ alert('导航到：'+name+'\n（正式版接入高德地图）') }
+function joinGroup(){ alert('扫码进群后，回复「椰子水」即可到店免费领取🥥\n\n（正式版跳转微信群二维码）') }
+
+// 初始化
+window.onload = () => { doSearch() }
+</script>
+</body>
+</html>

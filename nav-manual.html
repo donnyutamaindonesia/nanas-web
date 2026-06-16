@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>nanas.com.cn 导航分类手册 v1.0</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", sans-serif;
+    background: #f5f4f0;
+    color: #1a1a1a;
+    line-height: 1.7;
+    padding: 48px 24px 80px;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  /* ── Header ── */
+  .doc-header {
+    margin-bottom: 48px;
+  }
+  .doc-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #c96442;
+    margin-bottom: 12px;
+  }
+  .doc-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: #1a1a1a;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .doc-subtitle {
+    font-size: 15px;
+    color: #888;
+  }
+  .doc-meta {
+    margin-top: 20px;
+    display: flex;
+    gap: 24px;
+    font-size: 12px;
+    color: #aaa;
+  }
+  .doc-meta span { display: flex; align-items: center; gap: 6px; }
+
+  /* ── Section ── */
+  .section {
+    margin-bottom: 48px;
+  }
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #c96442;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e8e5e0;
+  }
+
+  /* ── Comparison Table ── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 32px 1fr;
+    gap: 0;
+  }
+  .compare-header {
+    display: contents;
+  }
+  .compare-header > div {
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #888;
+    text-transform: uppercase;
+    background: #ebe9e4;
+  }
+  .compare-header > .arrow-cell {
+    background: #ebe9e4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #c96442;
+    font-size: 12px;
+  }
+  .compare-row {
+    display: contents;
+  }
+  .compare-row > div {
+    padding: 14px 16px;
+    border-bottom: 1px solid #ebe9e4;
+    font-size: 14px;
+    background: #fff;
+  }
+  .compare-row:hover > div { background: #faf9f7; }
+  .compare-row > .arrow-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ddd;
+    font-size: 12px;
+    background: #faf9f7;
+    border-bottom: 1px solid #ebe9e4;
+  }
+  .claude-item {
+    font-weight: 500;
+    color: #444;
+  }
+  .nanas-item {
+    font-weight: 600;
+    color: #c96442;
+  }
+  .nanas-sub {
+    font-size: 12px;
+    color: #999;
+    margin-top: 2px;
+  }
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 10px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .tag-new { background: #fff3ee; color: #c96442; }
+  .tag-future { background: #f0f0f0; color: #999; }
+
+  /* ── Nav Item Cards ── */
+  .nav-items {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .nav-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  .nav-card-left {
+    border-right: 1px solid #f0ede8;
+    padding-right: 24px;
+  }
+  .nav-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 3px;
+  }
+  .nav-name-en {
+    font-size: 11px;
+    color: #c96442;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .nav-icon-preview {
+    margin-top: 10px;
+    width: 36px;
+    height: 36px;
+    background: #fff8f5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .nav-icon-preview svg { width: 18px; height: 18px; color: #c96442; }
+  .nav-desc {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 12px;
+    line-height: 1.6;
+  }
+  .nav-subitems {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .nav-subitem {
+    font-size: 12px;
+    background: #f5f4f0;
+    color: #555;
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+  .nav-subitem.highlight { background: #fff3ee; color: #c96442; font-weight: 600; }
+  .nav-note {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #aaa;
+    font-style: italic;
+  }
+  .nav-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 20px;
+    margin-top: 8px;
+  }
+  .nav-status.live { background: #f0faf4; color: #2d8a4e; }
+  .nav-status.soon { background: #fff8ee; color: #c96442; }
+  .nav-status.future { background: #f5f5f5; color: #aaa; }
+
+  /* ── Sidebar Preview ── */
+  .sidebar-preview {
+    background: #fff;
+    border-radius: 12px;
+    width: 220px;
+    padding: 20px 0;
+    border: 1px solid #e8e5e0;
+    box-shadow: 0 4px 20px rgba(0,0,0,.06);
+  }
+  .sp-logo {
+    padding: 0 18px 20px;
+    font-size: 17px;
+    font-weight: 800;
+    color: #c96442;
+    letter-spacing: 2px;
+  }
+  .sp-section-label {
+    padding: 4px 18px 6px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #bbb;
+    text-transform: uppercase;
+  }
+  .sp-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 10px 9px 18px;
+    font-size: 13.5px;
+    color: #444;
+    cursor: pointer;
+    border-radius: 0;
+    transition: background .1s;
+  }
+  .sp-item:hover { background: #f5f4f0; }
+  .sp-item.active { color: #c96442; font-weight: 600; background: #fff8f5; }
+  .sp-item svg { width: 15px; height: 15px; flex-shrink: 0; opacity: .55; }
+  .sp-item.active svg { opacity: 1; }
+  .sp-divider { height: 1px; background: #f0ede8; margin: 8px 0; }
+  .sp-section-title {
+    padding: 6px 18px 2px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #c96442;
+    text-transform: uppercase;
+  }
+  .sp-badge {
+    margin-left: auto;
+    font-size: 10px;
+    background: #fff3ee;
+    color: #c96442;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: 700;
+  }
+  .sp-new-btn {
+    margin: 0 10px 12px;
+    background: #c96442;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 13.5px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    width: calc(100% - 20px);
+  }
+  .sp-new-btn svg { width: 14px; height: 14px; }
+  .sidebar-preview-wrap {
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+  }
+  .sidebar-annotations {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .annotation {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #fff;
+    border-radius: 8px;
+  }
+  .annotation-num {
+    width: 20px;
+    height: 20px;
+    background: #c96442;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .annotation-text { font-size: 13px; color: #555; line-height: 1.5; }
+  .annotation-text strong { color: #1a1a1a; font-weight: 600; }
+
+  /* ── Rules ── */
+  .rules-list {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .rule-item {
+    display: flex;
+    gap: 16px;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0ede8;
+    align-items: flex-start;
+  }
+  .rule-item:last-child { border-bottom: none; }
+  .rule-num {
+    width: 24px;
+    height: 24px;
+    background: #f5f4f0;
+    color: #888;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .rule-content { font-size: 14px; color: #444; line-height: 1.6; }
+  .rule-content strong { color: #1a1a1a; }
+
+  /* ── Products Section ── */
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .product-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .product-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #fff8f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    font-size: 20px;
+  }
+  .product-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 2px;
+  }
+  .product-name-cn {
+    font-size: 12px;
+    color: #c96442;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .product-desc {
+    font-size: 13px;
+    color: #777;
+    line-height: 1.5;
+  }
+  .product-url {
+    margin-top: 10px;
+    font-size: 11px;
+    color: #bbb;
+    font-family: monospace;
+  }
+
+  /* ── Phase plan ── */
+  .phase-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .phase {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  .phase-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #c96442;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .phase-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #888;
+    margin-top: 2px;
+  }
+  .phase-items {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.8;
+  }
+  .phase-items li {
+    list-style: none;
+    padding-left: 16px;
+    position: relative;
+  }
+  .phase-items li::before {
+    content: "·";
+    position: absolute;
+    left: 0;
+    color: #c96442;
+  }
+
+  @media print {
+    body { background: #fff; }
+    .nav-card, .sidebar-preview, .rules-list, .products-grid, .phase { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="doc-header">
+    <div class="doc-label">Nanasity · nanas.com.cn</div>
+    <div class="doc-title">导航分类手册</div>
+    <div class="doc-subtitle">对标 Claude.ai · 适配邻里 AI 消费生态圈定位 · v1.0</div>
+    <div class="doc-meta">
+      <span>📅 2026-06-15 定版</span>
+      <span>👤 菠萝爪</span>
+      <span>🔗 nanas.com.cn</span>
+    </div>
+  </div>
+
+  <!-- 1. Claude.ai 对标分析 -->
+  <div class="section">
+    <div class="section-title">01 · Claude.ai 导航结构对标</div>
+    <div class="compare-grid">
+      <div class="compare-header">
+        <div>Claude.ai 原版</div>
+        <div class="arrow-cell">→</div>
+        <div>nanas.com.cn 对应项</div>
+      </div>
+
+      <div class="compare-row">
+        <div class="claude-item">✏️ New Chat<br><span style="font-size:12px;color:#aaa">发起新对话</span></div>
+        <div class="arrow-cell">→</div>
+        <div class="nanas-item">新对话 <span class="tag tag-new">MVP</span><div class="nanas-sub">一键清空，开始新问题</div></div>
+      </div>
+
+      <div class="compare-row">
+        <div class="claude-item">💬 Chats<br><span style="font-size:12px;color:#aaa">历史对话列表</span></div>
+        <div class="arrow-cell">→</div>
+        <div class="nanas-item">我的对话 <span class="tag tag-new">MVP</span><div class="nanas-sub">按时间倒序，可搜索，可重命名</div></div>
+      </div>
+
+      <div class="compare-row">
+        <div class="claude-item">📁 Projects<br><span style="font-size:12px;color:#aaa">长期项目，有独立知识库</span></div>
+        <div class="arrow-cell">→</div>
+        <div class="nanas-item">我的社群 · NanasClub <span class="tag tag-future">后期</span><div class="nanas-sub">订阅的便利店圈、优惠券群、团购活动</div></div>
+      </div>
+
+      <div class="compare-row">
+        <div class="claude-item">🖼️ Artifacts<br><span style="font-size:12px;color:#aaa">AI 生成的成果物</span></div>
+        <div class="arrow-cell">→</div>
+        <div class="nanas-item">我的收藏 <span class="tag tag-future">后期</span><div class="nanas-sub">保存的比价结果、优惠券、AI 推荐</div></div>
+      </div>
+
+      <div class="compare-row">
+        <div class="claude-item">⚙️ Customize<br><span style="font-size:12px;color:#aaa">Skills / Connectors / Plugins</span></div>
+        <div class="arrow-cell">→</div>
+        <div class="nanas-item">个性化设置 <span class="tag tag-future">后期</span><div class="nanas-sub">推送偏好、AI 语气、绑定门店、位置</div></div>
+      </div>
+
+      <div class="compare-row">
+        <div class="claude-item">🛍️ Products<br><span style="font-size:12px;color:#aaa">Code / Design (跳外部产品)</span></div>
+        <div class="arrow-cell">→</div>
+        <div class="nanas-item">C 家族产品 <span class="tag tag-new">MVP</span><div class="nanas-sub">菠萝爪 / 菠萝荟 / 菠萝聊 / 菠萝卡</div></div>
+      </div>
+
+      <div class="compare-row">
+        <div class="claude-item">🕐 Recents<br><span style="font-size:12px;color:#aaa">最近打开的对话</span></div>
+        <div class="arrow-cell">→</div>
+        <div class="nanas-item">最近 <span class="tag tag-new">MVP</span><div class="nanas-sub">侧边栏底部，最近 5 条快速续聊</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 各导航项详解 -->
+  <div class="section">
+    <div class="section-title">02 · 各导航项定义与内容</div>
+    <div class="nav-items">
+
+      <!-- 新对话 -->
+      <div class="nav-card">
+        <div class="nav-card-left">
+          <div class="nav-name">新对话</div>
+          <div class="nav-name-en">New Chat</div>
+          <div class="nav-icon-preview">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          </div>
+          <div class="nav-status live">● MVP 首发</div>
+        </div>
+        <div>
+          <div class="nav-desc">点击后清空当前对话，回到问候界面。是频率最高的操作，放在侧边栏最顶部，按钮样式区别于列表项。</div>
+          <div class="nav-subitems">
+            <span class="nav-subitem highlight">清空当前对话</span>
+            <span class="nav-subitem">回到问候界面</span>
+            <span class="nav-subitem">4 个场景快捷 Chip 重现</span>
+          </div>
+          <div class="nav-note">参考 Claude.ai：始终在侧边栏第一位，橙色主色按钮</div>
+        </div>
+      </div>
+
+      <!-- 我的对话 -->
+      <div class="nav-card">
+        <div class="nav-card-left">
+          <div class="nav-name">我的对话</div>
+          <div class="nav-name-en">Chats</div>
+          <div class="nav-icon-preview">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          </div>
+          <div class="nav-status live">● MVP 首发</div>
+        </div>
+        <div>
+          <div class="nav-desc">用户所有历史对话，按时间倒序。每条显示标题（AI 自动提炼）和时间戳。支持搜索，点击续聊。</div>
+          <div class="nav-subitems">
+            <span class="nav-subitem highlight">今天</span>
+            <span class="nav-subitem highlight">昨天</span>
+            <span class="nav-subitem highlight">本周</span>
+            <span class="nav-subitem">更早</span>
+          </div>
+          <div class="nav-subitems" style="margin-top:6px">
+            <span class="nav-subitem">按日期分组</span>
+            <span class="nav-subitem">搜索框（本地关键词）</span>
+            <span class="nav-subitem">右键重命名 / 删除</span>
+          </div>
+          <div class="nav-note">MVP 可用 localStorage 存储；登录后同步到云端</div>
+        </div>
+      </div>
+
+      <!-- C 家族产品 -->
+      <div class="nav-card">
+        <div class="nav-card-left">
+          <div class="nav-name">C 家族</div>
+          <div class="nav-name-en">Products</div>
+          <div class="nav-icon-preview">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+          </div>
+          <div class="nav-status live">● MVP 首发</div>
+        </div>
+        <div>
+          <div class="nav-desc">Nanas 旗下 C 端产品矩阵，点击跳转对应子站或小程序。对应 Claude.ai 的 Products（Code / Design）。在侧边栏用小标题分组展示。</div>
+          <div class="nav-subitems">
+            <span class="nav-subitem highlight">菠萝爪 NanasClaw</span>
+            <span class="nav-subitem highlight">菠萝荟 NanasClub</span>
+            <span class="nav-subitem">菠萝聊 NanasChat</span>
+            <span class="nav-subitem">菠萝卡 NanasCard</span>
+          </div>
+          <div class="nav-note">NanasClaw / NanasClub 先上线，NanasChat / NanasCard 加"即将上线"角标</div>
+        </div>
+      </div>
+
+      <!-- 解决方案 -->
+      <div class="nav-card">
+        <div class="nav-card-left">
+          <div class="nav-name">便利店赋能</div>
+          <div class="nav-name-en">Solutions</div>
+          <div class="nav-icon-preview">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+          </div>
+          <div class="nav-status live">● MVP 首发</div>
+        </div>
+        <div>
+          <div class="nav-desc">面向便利店、社区门店、店主的宣传入口。Nanas 的核心差异化：AI + 便利店联盟 + 邻里社群。</div>
+          <div class="nav-subitems">
+            <span class="nav-subitem highlight">店主入驻</span>
+            <span class="nav-subitem highlight">动销洞察</span>
+            <span class="nav-subitem">活动发布</span>
+            <span class="nav-subitem">优惠券工具</span>
+            <span class="nav-subitem">比价接入</span>
+          </div>
+          <div class="nav-note">对应原「解决方案」栏目，改名更具场景感</div>
+        </div>
+      </div>
+
+      <!-- 关于 Nanasity -->
+      <div class="nav-card">
+        <div class="nav-card-left">
+          <div class="nav-name">关于 Nanasity</div>
+          <div class="nav-name-en">About</div>
+          <div class="nav-icon-preview">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 16v-4m0-4h.01"/></svg>
+          </div>
+          <div class="nav-status live">● MVP 首发</div>
+        </div>
+        <div>
+          <div class="nav-desc">品牌故事、使命愿景、团队信息、媒体资源包。面向投资人、合作门店、媒体的信任建立页面。</div>
+          <div class="nav-subitems">
+            <span class="nav-subitem">品牌故事</span>
+            <span class="nav-subitem">使命：邻里 AI 消费生态圈</span>
+            <span class="nav-subitem">品牌手册下载</span>
+            <span class="nav-subitem">联系我们</span>
+          </div>
+          <div class="nav-note">合并原「关于我们 + 联系我们」两项，减少冗余</div>
+        </div>
+      </div>
+
+      <!-- 后期：我的社群 -->
+      <div class="nav-card" style="opacity:.7">
+        <div class="nav-card-left">
+          <div class="nav-name">我的社群</div>
+          <div class="nav-name-en">NanasClub</div>
+          <div class="nav-icon-preview">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
+          </div>
+          <div class="nav-status future">○ 后期规划</div>
+        </div>
+        <div>
+          <div class="nav-desc">用户订阅的便利店群、邻里社群、团购活动看板。等同于 Claude.ai 的 Projects——有独立知识库的持久空间。</div>
+          <div class="nav-subitems">
+            <span class="nav-subitem">关注的门店</span>
+            <span class="nav-subitem">我的优惠券</span>
+            <span class="nav-subitem">团购活动</span>
+            <span class="nav-subitem">社群通知</span>
+          </div>
+          <div class="nav-note">与 NanasClub 小程序数据互通；登录后可见</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 3. 侧边栏最终结构预览 -->
+  <div class="section">
+    <div class="section-title">03 · 侧边栏最终结构预览</div>
+    <div class="sidebar-preview-wrap">
+      <div class="sidebar-preview">
+        <div class="sp-logo">NANAS</div>
+
+        <!-- 新对话按钮 -->
+        <button class="sp-new-btn" style="pointer-events:none">
+          <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          新对话
+        </button>
+
+        <!-- 对话记录 -->
+        <div class="sp-section-label">对话</div>
+        <div class="sp-item active">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          我的对话
+        </div>
+
+        <div class="sp-divider"></div>
+
+        <!-- C 家族 -->
+        <div class="sp-section-title">C 家族</div>
+        <div class="sp-item">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35"/></svg>
+          菠萝爪 · 比价
+          <span class="sp-badge">NEW</span>
+        </div>
+        <div class="sp-item">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
+          菠萝荟 · 社群
+        </div>
+        <div class="sp-item" style="opacity:.5">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          菠萝聊 · 助手
+        </div>
+        <div class="sp-item" style="opacity:.5">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+          菠萝卡 · 充值
+        </div>
+
+        <div class="sp-divider"></div>
+
+        <!-- 关于 -->
+        <div class="sp-section-label">关于</div>
+        <div class="sp-item">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+          便利店赋能
+        </div>
+        <div class="sp-item">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 16v-4m0-4h.01"/></svg>
+          关于 Nanasity
+        </div>
+      </div>
+
+      <div class="sidebar-annotations">
+        <div class="annotation">
+          <div class="annotation-num">1</div>
+          <div class="annotation-text"><strong>新对话</strong>用橙色按钮样式，区别于列表项。点击最高频，视觉权重最高。</div>
+        </div>
+        <div class="annotation">
+          <div class="annotation-num">2</div>
+          <div class="annotation-text"><strong>我的对话</strong>展示最近 5 条（MVP），点击直接续聊，不单独跳页。</div>
+        </div>
+        <div class="annotation">
+          <div class="annotation-num">3</div>
+          <div class="annotation-text"><strong>C 家族</strong>用独立小标题分组。菠萝聊/菠萝卡半透明 + 即将上线 badge，不可点击。</div>
+        </div>
+        <div class="annotation">
+          <div class="annotation-num">4</div>
+          <div class="annotation-text"><strong>便利店赋能</strong>面向 B 端（店主），放在最底部，不抢 C 端用户的视线焦点。</div>
+        </div>
+        <div class="annotation">
+          <div class="annotation-num">5</div>
+          <div class="annotation-text"><strong>删除原有项</strong>：「软件 / 文档 / 商店」合并进 C 家族或品牌手册，减少冗余层级。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. C 家族产品简介 -->
+  <div class="section">
+    <div class="section-title">04 · C 家族产品定义（侧边栏跳转目标）</div>
+    <div class="products-grid">
+      <div class="product-card">
+        <div class="product-icon">🦞</div>
+        <div class="product-name">NanasClaw</div>
+        <div class="product-name-cn">菠萝爪 · 比价工具</div>
+        <div class="product-desc">抓取周边便利店实时价格，AI 推荐最低价门店。下楼前先问菠萝爪。</div>
+        <div class="product-url">NanasClaw.com / 微信小程序</div>
+      </div>
+      <div class="product-card">
+        <div class="product-icon">🍍</div>
+        <div class="product-name">NanasClub</div>
+        <div class="product-name-cn">菠萝荟 · 社群会员</div>
+        <div class="product-desc">便利店联盟社群，优惠券、团购、邻里活动聚合。35+42 类商标注册中。</div>
+        <div class="product-url">NanasClub.com</div>
+      </div>
+      <div class="product-card" style="opacity:.6">
+        <div class="product-icon">💬</div>
+        <div class="product-name">NanasChat</div>
+        <div class="product-name-cn">菠萝聊 · AI 助手</div>
+        <div class="product-desc">长辈友好的 AI 对话助手，大字体、口语化、支持语音输入。即将上线。</div>
+        <div class="product-url">NanasChat.com（待上线）</div>
+      </div>
+      <div class="product-card" style="opacity:.6">
+        <div class="product-icon">💳</div>
+        <div class="product-name">NanasCard</div>
+        <div class="product-name-cn">菠萝卡 · 算力充值</div>
+        <div class="product-desc">线下发行的 AI 算力充值卡，便利店渠道铺货，连接线下流量。即将上线。</div>
+        <div class="product-url">NanasCard.com（待上线）</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. 设计规则 -->
+  <div class="section">
+    <div class="section-title">05 · 导航设计规则</div>
+    <div class="rules-list">
+      <div class="rule-item">
+        <div class="rule-num">R1</div>
+        <div class="rule-content"><strong>最高频操作最显眼</strong>：「新对话」用橙色主色按钮，其余导航项用文字+图标列表形式，视觉权重清晰区分。</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">R2</div>
+        <div class="rule-content"><strong>层级最多两层</strong>：侧边栏只有「分组标题 → 子项」，不做三级菜单。参照 Claude.ai 的扁平结构。</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">R3</div>
+        <div class="rule-content"><strong>未上线产品可见不可用</strong>：菠萝聊 / 菠萝卡显示在列表，透明度 50%，角标「即将上线」，不可点击。制造期待，不欺骗用户。</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">R4</div>
+        <div class="rule-content"><strong>C 端优先，B 端收底</strong>：便利店赋能（店主入驻）放在侧边栏最下方。主动线是 C 端用户问答，不混淆受众。</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">R5</div>
+        <div class="rule-content"><strong>合并冗余项</strong>：原「软件 / 文档 / 商店 / 关于我们 / 联系我们」5 项合并为「C 家族 / 关于 Nanasity」2 项，减少认知负荷。</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">R6</div>
+        <div class="rule-content"><strong>配色守则</strong>：主色 <code>#c96442</code>（暖橙），背景 <code>#f5f4f0</code>，侧边栏白底 <code>#fff</code>。禁止暗色主题，保持暖色极简白底风格。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. 迭代路线图 -->
+  <div class="section">
+    <div class="section-title">06 · 导航迭代路线图</div>
+    <div class="phase-list">
+      <div class="phase">
+        <div>
+          <div class="phase-label">Phase 1</div>
+          <div class="phase-name">当前 MVP</div>
+        </div>
+        <ul class="phase-items">
+          <li>新对话按钮（橙色主色）</li>
+          <li>我的对话（localStorage，最近 5 条）</li>
+          <li>C 家族 4 个入口（已上线 2 个，待上线 2 个半透明）</li>
+          <li>便利店赋能 + 关于 Nanasity（静态页）</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div>
+          <div class="phase-label">Phase 2</div>
+          <div class="phase-name">登录后功能</div>
+        </div>
+        <ul class="phase-items">
+          <li>对话历史云端同步（绑定微信账号）</li>
+          <li>我的社群（NanasClub 数据接入）</li>
+          <li>我的收藏（比价结果、优惠券）</li>
+          <li>搜索历史对话</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div>
+          <div class="phase-label">Phase 3</div>
+          <div class="phase-name">个性化阶段</div>
+        </div>
+        <ul class="phase-items">
+          <li>个性化设置（位置、推送偏好、AI 语气）</li>
+          <li>菠萝聊 NanasChat 上线，导航激活</li>
+          <li>菠萝卡 NanasCard 上线，充值入口</li>
+          <li>侧边栏支持折叠（宽屏 220px / 窄屏 64px 图标模式）</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div style="text-align:center; font-size:12px; color:#ccc; margin-top:64px; padding-top:24px; border-top:1px solid #e8e5e0;">
+    ©2026 Nanasity 菠萝荟社区 AI 平台 · nanas.com.cn · 品牌手册：/brand-manual.html
+  </div>
+
+</div>
+</body>
+</html>

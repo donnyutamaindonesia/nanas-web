@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nanasity · Nanas C 家族品牌手册</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange:  #E8611A;
+  --orange-2: #F07020;
+  --orange-light: #FFF0E6;
+  --green:   #4C8C14;
+  --ink:     #1A1410;
+  --ink-2:   #5A4A3A;
+  --ink-3:   #A08878;
+  --bg:      #FAF8F5;
+  --bg-2:    #F3EEE8;
+  --white:   #FFFCF9;
+  --border:  #E8E0D6;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "Noto Sans SC", -apple-system, "PingFang SC", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.7;
+}
+
+/* ── Layout ── */
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+
+/* ── Nav ── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(250,248,245,0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-brand {
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--orange);
+}
+.nav-brand span { color: var(--green); }
+.nav-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 13px;
+  color: var(--ink-2);
+  text-decoration: none;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: color .15s;
+}
+.nav-links a:hover { color: var(--orange); }
+
+/* ── Hero ── */
+.hero {
+  padding: 80px 32px 64px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--orange);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.hero-title {
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: clamp(52px, 10vw, 96px);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -1px;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.hero-title .n { color: var(--orange); }
+.hero-title .ity { color: var(--green); }
+.hero-sub {
+  font-size: 18px;
+  color: var(--ink-2);
+  margin-bottom: 32px;
+  font-weight: 400;
+}
+.hero-desc {
+  font-size: 15px;
+  color: var(--ink-2);
+  max-width: 540px;
+  line-height: 1.8;
+}
+.hero-rule {
+  width: 48px;
+  height: 3px;
+  background: var(--orange);
+  border-radius: 2px;
+  margin: 36px 0;
+}
+
+/* ── Sections ── */
+section {
+  padding: 64px 0;
+  border-top: 1px solid var(--border);
+}
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--orange);
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+.section-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.section-body {
+  font-size: 15px;
+  color: var(--ink-2);
+  max-width: 620px;
+  line-height: 1.85;
+}
+
+/* ── Word breakdown ── */
+.word-box {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 36px;
+  margin: 32px 0;
+}
+.word-equation {
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.word-part { color: var(--ink); }
+.word-part.orange { color: var(--orange); }
+.word-part.green  { color: var(--green); }
+.word-op { color: var(--ink-3); font-size: 32px; }
+.word-eq { color: var(--ink-3); font-size: 32px; }
+.word-rows { display: flex; flex-direction: column; gap: 12px; }
+.word-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 16px;
+  align-items: start;
+  font-size: 14px;
+}
+.word-key { color: var(--ink-3); font-weight: 500; }
+.word-val { color: var(--ink); }
+
+/* ── Compare table ── */
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 32px 0;
+}
+.compare-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+.compare-card.new { border-color: var(--orange); }
+.compare-tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.compare-tag.old { color: var(--ink-3); }
+.compare-tag.new { color: var(--orange); }
+.compare-word {
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.compare-word.old { color: var(--ink-3); text-decoration: line-through; }
+.compare-word.new { color: var(--orange); }
+.compare-note { font-size: 13px; color: var(--ink-2); line-height: 1.6; }
+
+/* ── Domain table ── */
+.domain-table { width: 100%; border-collapse: collapse; margin: 28px 0; }
+.domain-table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  padding: 10px 16px;
+  border-bottom: 2px solid var(--border);
+}
+.domain-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  vertical-align: top;
+}
+.domain-table tr:last-child td { border-bottom: none; }
+.domain-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.badge-main   { background: var(--orange); color: #fff; }
+.badge-def    { background: var(--bg-2); color: var(--ink-2); }
+.badge-prod   { background: var(--green); color: #fff; }
+.badge-future { background: var(--bg-2); color: var(--ink-3); font-style: italic; }
+.domain-url { font-family: "Barlow Condensed", monospace; font-size: 16px; font-weight: 600; color: var(--ink); }
+
+/* ── Product grid ── */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 32px 0;
+}
+.product-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+}
+.product-icon {
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+.product-name-en {
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--orange);
+  margin-bottom: 2px;
+}
+.product-name-cn {
+  font-size: 13px;
+  color: var(--ink-2);
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.product-desc { font-size: 13px; color: var(--ink-3); line-height: 1.65; }
+.product-domain {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--ink-3);
+  font-family: monospace;
+}
+
+/* ── Copyright block ── */
+.copyright-block {
+  background: var(--ink);
+  border-radius: 16px;
+  padding: 40px;
+  margin: 32px 0;
+  color: #fff;
+}
+.copyright-block pre {
+  font-family: "Noto Sans SC", sans-serif;
+  font-size: 14px;
+  line-height: 2;
+  white-space: pre-wrap;
+  color: rgba(255,255,255,0.85);
+}
+.copyright-block pre strong {
+  color: #fff;
+  font-weight: 700;
+}
+.copyright-block .cb-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 20px;
+}
+
+/* ── Slogan ── */
+.slogan-display {
+  background: var(--orange);
+  border-radius: 16px;
+  padding: 40px;
+  margin: 28px 0;
+  text-align: center;
+}
+.slogan-cn {
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.slogan-en {
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.75);
+  letter-spacing: 1px;
+}
+
+/* ── Logo preview ── */
+.logo-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin: 28px 0;
+}
+.logo-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.logo-preview-bg {
+  padding: 20px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-label { font-size: 11px; color: var(--ink-3); letter-spacing: 1px; }
+
+/* ── Colors ── */
+.color-swatches {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 28px 0;
+}
+.swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.swatch-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,.06);
+}
+.swatch-name { font-size: 11px; color: var(--ink-3); letter-spacing: 0.5px; }
+.swatch-hex  { font-size: 11px; color: var(--ink-2); font-family: monospace; }
+
+/* ── Footer ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 40px 32px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+.footer-brand {
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--orange);
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+.footer-copy { font-size: 12px; color: var(--ink-3); line-height: 1.8; }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .wrap, .hero, .nav-inner, footer { padding-left: 20px; padding-right: 20px; }
+  .hero { padding-top: 48px; }
+  .product-grid { grid-template-columns: 1fr; }
+  .compare { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand">Nanas<span>ity</span></div>
+    <ul class="nav-links">
+      <li><a href="#brand">品牌</a></li>
+      <li><a href="#cfamily">C 家族</a></li>
+      <li><a href="#domains">域名</a></li>
+      <li><a href="#copy">版权文案</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<div class="hero">
+  <p class="hero-eyebrow">Official Brand Manual · 2026</p>
+  <h1 class="hero-title">
+    <span class="n">Nanas</span><span class="ity">ity</span>
+  </h1>
+  <p class="hero-sub">菠萝荟 · 邻里 AI 消费生态圈</p>
+  <div class="hero-rule"></div>
+  <p class="hero-desc">
+    Nanasity 是菠萝爪生态的品牌母体，旗下五条 C 产品线共享 Nanas 前缀。本手册定义品牌全称、Nanas C 家族架构、域名资产规划，以及所有公开场合的版权标准文案。
+  </p>
+</div>
+
+<!-- ── 一、品牌构词 ── -->
+<div class="wrap">
+<section id="brand">
+  <p class="section-label">Section 01 · Brand Name</p>
+  <h2 class="section-title">Nanasity · 构词逻辑</h2>
+  <p class="section-body">
+    自创合成词，拼写合规，无重名，商标尽调干净。
+  </p>
+
+  <div class="word-box">
+    <div class="word-equation">
+      <span class="word-part orange">Nanas</span>
+      <span class="word-op">+</span>
+      <span class="word-part green">ity</span>
+      <span class="word-eq">=</span>
+      <span class="word-part" style="color:var(--ink)">Nanasity</span>
+    </div>
+    <div class="word-rows">
+      <div class="word-row">
+        <span class="word-key">Nanas</span>
+        <span class="word-val">菠萝（Pineapple），品牌母体词</span>
+      </div>
+      <div class="word-row">
+        <span class="word-key">-ity</span>
+        <span class="word-val">标准英文后缀，源自 community / humanity，代表群体、社群、共同体</span>
+      </div>
+      <div class="word-row">
+        <span class="word-key">中文对译</span>
+        <span class="word-val">菠萝社 / 菠萝社区</span>
+      </div>
+      <div class="word-row">
+        <span class="word-key">读音</span>
+        <span class="word-val">/ nɑːnəs · ɪti / — 流畅，无双辅音卡顿</span>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="font-size:16px;font-weight:700;color:var(--ink);margin:32px 0 16px;">新旧对比</h3>
+  <div class="compare">
+    <div class="compare-card">
+      <p class="compare-tag old">旧写法 · 废弃</p>
+      <p class="compare-word old">Nanasnity</p>
+      <p class="compare-note">双 n 冗余，拼写生硬，英文观感别扭，商标注册有风险</p>
+    </div>
+    <div class="compare-card new">
+      <p class="compare-tag new">新写法 · 官方定版</p>
+      <p class="compare-word new">Nanasity</p>
+      <p class="compare-note">词根清晰，无多余字母，海外观感专业，商标独一无二</p>
+    </div>
+  </div>
+
+  <!-- Logo Preview -->
+  <h3 style="font-size:16px;font-weight:700;color:var(--ink);margin:32px 0 16px;">Logo 示意</h3>
+  <div class="logo-row">
+    <div class="logo-preview">
+      <div class="logo-preview-bg" style="background:var(--bg-2);">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" width="80" height="88">
+          <path d="M 0,-24 C 7,-11 7,4 0,15 C -7,4 -7,-11 0,-24 Z" fill="#1E5206" transform="translate(58,78) rotate(-44)"/>
+          <path d="M 0,-30 C 9,-14 9,6 0,18 C -9,6 -9,-14 0,-30 Z" fill="#306E0C" transform="translate(78,70) rotate(-22)"/>
+          <path d="M 0,-36 C 10,-16 10,7 0,22 C -10,7 -10,-16 0,-36 Z" fill="#44961A" transform="translate(100,65)"/>
+          <path d="M 0,-30 C 9,-14 9,6 0,18 C -9,6 -9,-14 0,-30 Z" fill="#306E0C" transform="translate(122,70) rotate(22)"/>
+          <path d="M 0,-24 C 7,-11 7,4 0,15 C -7,4 -7,-11 0,-24 Z" fill="#1E5206" transform="translate(142,78) rotate(44)"/>
+          <rect x="12" y="66" width="176" height="142" rx="36" fill="#F07020"/>
+          <rect x="81" y="90" width="38" height="94" rx="19" fill="white"/>
+          <rect x="53" y="116" width="94" height="38" rx="19" fill="white"/>
+        </svg>
+      </div>
+      <span class="logo-label">浅底</span>
+    </div>
+    <div class="logo-preview">
+      <div class="logo-preview-bg" style="background:#2A2A2A;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" width="80" height="88">
+          <path d="M 0,-24 C 7,-11 7,4 0,15 C -7,4 -7,-11 0,-24 Z" fill="#2A7010" transform="translate(58,78) rotate(-44)"/>
+          <path d="M 0,-30 C 9,-14 9,6 0,18 C -9,6 -9,-14 0,-30 Z" fill="#3E9018" transform="translate(78,70) rotate(-22)"/>
+          <path d="M 0,-36 C 10,-16 10,7 0,22 C -10,7 -10,-16 0,-36 Z" fill="#54B420" transform="translate(100,65)"/>
+          <path d="M 0,-30 C 9,-14 9,6 0,18 C -9,6 -9,-14 0,-30 Z" fill="#3E9018" transform="translate(122,70) rotate(22)"/>
+          <path d="M 0,-24 C 7,-11 7,4 0,15 C -7,4 -7,-11 0,-24 Z" fill="#2A7010" transform="translate(142,78) rotate(44)"/>
+          <rect x="12" y="66" width="176" height="142" rx="36" fill="#F07020"/>
+          <rect x="81" y="90" width="38" height="94" rx="19" fill="white"/>
+          <rect x="53" y="116" width="94" height="38" rx="19" fill="white"/>
+        </svg>
+      </div>
+      <span class="logo-label">深底</span>
+    </div>
+    <div class="logo-preview" style="flex:1; align-items:flex-start; margin-left:16px;">
+      <div style="display:flex; align-items:center; gap:16px; background:var(--white); border:1px solid var(--border); border-radius:14px; padding:20px 28px;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" width="44" height="48">
+          <path d="M 0,-24 C 7,-11 7,4 0,15 C -7,4 -7,-11 0,-24 Z" fill="#1E5206" transform="translate(58,78) rotate(-44)"/>
+          <path d="M 0,-30 C 9,-14 9,6 0,18 C -9,6 -9,-14 0,-30 Z" fill="#306E0C" transform="translate(78,70) rotate(-22)"/>
+          <path d="M 0,-36 C 10,-16 10,7 0,22 C -10,7 -10,-16 0,-36 Z" fill="#44961A" transform="translate(100,65)"/>
+          <path d="M 0,-30 C 9,-14 9,6 0,18 C -9,6 -9,-14 0,-30 Z" fill="#306E0C" transform="translate(122,70) rotate(22)"/>
+          <path d="M 0,-24 C 7,-11 7,4 0,15 C -7,4 -7,-11 0,-24 Z" fill="#1E5206" transform="translate(142,78) rotate(44)"/>
+          <rect x="12" y="66" width="176" height="142" rx="36" fill="#F07020"/>
+          <rect x="81" y="90" width="38" height="94" rx="19" fill="white"/>
+          <rect x="53" y="116" width="94" height="38" rx="19" fill="white"/>
+        </svg>
+        <div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:800;color:var(--orange);letter-spacing:1px;">Nanas<span style="color:var(--green);">ity</span></div>
+          <div style="font-size:12px;color:var(--ink-3);letter-spacing:2px;margin-top:2px;">菠萝社</div>
+        </div>
+      </div>
+      <span class="logo-label" style="margin-top:10px;">横版组合</span>
+    </div>
+  </div>
+
+  <!-- Brand Colors -->
+  <h3 style="font-size:16px;font-weight:700;color:var(--ink);margin:32px 0 16px;">品牌色</h3>
+  <div class="color-swatches">
+    <div class="swatch">
+      <div class="swatch-circle" style="background:#E8611A;"></div>
+      <span class="swatch-name">主橙</span>
+      <span class="swatch-hex">#E8611A</span>
+    </div>
+    <div class="swatch">
+      <div class="swatch-circle" style="background:#F07020;"></div>
+      <span class="swatch-name">亮橙</span>
+      <span class="swatch-hex">#F07020</span>
+    </div>
+    <div class="swatch">
+      <div class="swatch-circle" style="background:#4C8C14;"></div>
+      <span class="swatch-name">叶绿</span>
+      <span class="swatch-hex">#4C8C14</span>
+    </div>
+    <div class="swatch">
+      <div class="swatch-circle" style="background:#FAF8F5; border:1px solid #E8E0D6;"></div>
+      <span class="swatch-name">背景</span>
+      <span class="swatch-hex">#FAF8F5</span>
+    </div>
+    <div class="swatch">
+      <div class="swatch-circle" style="background:#1A1410;"></div>
+      <span class="swatch-name">字墨</span>
+      <span class="swatch-hex">#1A1410</span>
+    </div>
+  </div>
+
+  <!-- Slogan -->
+  <div class="slogan-display">
+    <p class="slogan-cn">邻里 AI 消费生态圈</p>
+    <p class="slogan-en">Nanasity · Community AI Ecosystem</p>
+  </div>
+</section>
+
+<!-- ── 二、Nanas C 家族 ── -->
+<section id="cfamily">
+  <p class="section-label">Section 02 · C Family</p>
+  <h2 class="section-title">Nanas C 家族</h2>
+  <p class="section-body">
+    四条产品线，首字母全部为 C，共享 Nanas 前缀，形成可识别的品牌家族。
+    Claw 抓价 → Club 聚人 → Chat 服务 → Card 变现，构成完整的社区商业飞轮。
+  </p>
+
+  <!-- Flywheel -->
+  <div style="background:var(--white);border:1px solid var(--border);border-radius:16px;padding:36px;margin:28px 0;">
+    <div style="display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;">
+      <div style="text-align:center;padding:16px 20px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;color:var(--orange);">C<span style="color:var(--ink);">law</span></div>
+        <div style="font-size:12px;color:var(--ink-3);margin-top:4px;">菠萝爪</div>
+        <div style="font-size:11px;color:var(--ink-3);">抓最低价</div>
+      </div>
+      <div style="font-size:22px;color:var(--border);padding:0 4px;">→</div>
+      <div style="text-align:center;padding:16px 20px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;color:var(--orange);">C<span style="color:var(--ink);">lub</span></div>
+        <div style="font-size:12px;color:var(--ink-3);margin-top:4px;">菠萝荟</div>
+        <div style="font-size:11px;color:var(--ink-3);">聚社群</div>
+      </div>
+      <div style="font-size:22px;color:var(--border);padding:0 4px;">→</div>
+      <div style="text-align:center;padding:16px 20px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;color:var(--orange);">C<span style="color:var(--ink);">hat</span></div>
+        <div style="font-size:12px;color:var(--ink-3);margin-top:4px;">菠萝聊</div>
+        <div style="font-size:11px;color:var(--ink-3);">服务人</div>
+      </div>
+      <div style="font-size:22px;color:var(--border);padding:0 4px;">→</div>
+      <div style="text-align:center;padding:16px 20px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;color:var(--orange);">C<span style="color:var(--ink);">ard</span></div>
+        <div style="font-size:12px;color:var(--ink-3);margin-top:4px;">菠萝卡</div>
+        <div style="font-size:11px;color:var(--ink-3);">变现</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Five cards -->
+  <div style="display:flex;flex-direction:column;gap:12px;margin:28px 0;">
+
+    <div style="display:grid;grid-template-columns:80px 1fr auto;gap:20px;align-items:center;background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px 24px;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;color:var(--orange);">Claw</div>
+      <div>
+        <p style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px;">菠萝爪 · 比价工具</p>
+        <p style="font-size:13px;color:var(--ink-3);">附近便利店实时比价，微信小程序，AI 一爪抓最低价</p>
+      </div>
+      <div style="text-align:right;">
+        <span style="background:var(--green);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.5px;">✅ 已注册</span>
+        <p style="font-size:11px;color:var(--ink-3);margin-top:6px;font-family:monospace;">NanasClaw.com</p>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:80px 1fr auto;gap:20px;align-items:center;background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px 24px;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;color:var(--orange);">Club</div>
+      <div>
+        <p style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px;">菠萝荟 · 社群会员</p>
+        <p style="font-size:13px;color:var(--ink-3);">便利店联盟、小区社群、会员荟萃，草字头自然联想植物生命力</p>
+      </div>
+      <div style="text-align:right;">
+        <span style="background:#E8A020;color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.5px;">🔄 注册中 35+42</span>
+        <p style="font-size:11px;color:var(--ink-3);margin-top:6px;font-family:monospace;">NanasClub.com</p>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:80px 1fr auto;gap:20px;align-items:center;background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px 24px;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;color:var(--orange);">Chat</div>
+      <div>
+        <p style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px;">菠萝聊 · AI 对话</p>
+        <p style="font-size:13px;color:var(--ink-3);">长辈友好 AI 助手，大字气泡，freellmapi 免费池驱动，nanas.com.cn 承载</p>
+      </div>
+      <div style="text-align:right;">
+        <span style="background:var(--bg-2);color:var(--ink-2);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.5px;">待注册</span>
+        <p style="font-size:11px;color:var(--ink-3);margin-top:6px;font-family:monospace;">NanasChat.com</p>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:80px 1fr auto;gap:20px;align-items:center;background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px 24px;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;color:var(--orange);">Card</div>
+      <div>
+        <p style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px;">菠萝卡 · 算力充值</p>
+        <p style="font-size:13px;color:var(--ink-3);">线下便利店发行，¥9.9 起，AI 次数充值，白嫖引流转付费订阅</p>
+      </div>
+      <div style="text-align:right;">
+        <span style="background:var(--bg-2);color:var(--ink-2);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.5px;">待注册</span>
+        <p style="font-size:11px;color:var(--ink-3);margin-top:6px;font-family:monospace;">NanasCard.com</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── 三、域名资产 ── -->
+<section id="domains">
+  <p class="section-label">Section 03 · Domain Assets</p>
+  <h2 class="section-title">域名资产规划</h2>
+  <p class="section-body">
+    五域矩阵：主运营 + 品牌防御 + 三条产品线 + 远期核心资产收购。任何对外传播，优先展示 nanas.com.cn。
+  </p>
+
+  <table class="domain-table">
+    <thead>
+      <tr>
+        <th>优先级</th>
+        <th>域名</th>
+        <th>用途</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="domain-badge badge-main">国内运营主域</span></td>
+        <td class="domain-url">nanas.com.cn</td>
+        <td style="font-size:14px;color:var(--ink-2);">官网门户，中文市场首推</td>
+      </tr>
+      <tr>
+        <td><span class="domain-badge badge-def">品牌防御</span></td>
+        <td class="domain-url">nanasity.com</td>
+        <td style="font-size:14px;color:var(--ink-2);">品牌核心词站，海外展示 + 商标防御</td>
+      </tr>
+      <tr>
+        <td><span class="domain-badge badge-prod">C 家族</span></td>
+        <td class="domain-url">NanasClaw.com</td>
+        <td style="font-size:14px;color:var(--ink-2);">菠萝爪 · 比价工具 ✅商标已注册</td>
+      </tr>
+      <tr>
+        <td><span class="domain-badge badge-prod">C 家族</span></td>
+        <td class="domain-url">NanasClub.com</td>
+        <td style="font-size:14px;color:var(--ink-2);">菠萝荟 · 社群会员平台 <span style="color:#E8A020;font-size:12px;font-weight:700;">🔄 注册中 35+42</span></td>
+      </tr>
+      <tr>
+        <td><span class="domain-badge badge-prod">C 家族</span></td>
+        <td class="domain-url">NanasChat.com</td>
+        <td style="font-size:14px;color:var(--ink-2);">菠萝聊 · AI 对话助手</td>
+      </tr>
+      <tr>
+        <td><span class="domain-badge badge-prod">C 家族</span></td>
+        <td class="domain-url">NanasCard.com</td>
+        <td style="font-size:14px;color:var(--ink-2);">菠萝卡 · 算力充值卡</td>
+      </tr>
+      <tr>
+        <td><span class="domain-badge badge-future">远期收购</span></td>
+        <td class="domain-url">nanas.com</td>
+        <td style="font-size:14px;color:var(--ink-3);">IPO 前完成收购 + 全类 Nanas 文字商标</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+
+<!-- ── 四、版权文案 ── -->
+<section id="copy">
+  <p class="section-label">Section 04 · Legal Copy</p>
+  <h2 class="section-title">版权标准文案</h2>
+  <p class="section-body">
+    所有官方页面底部、对外文件、宣传材料，统一使用以下文案。禁止自行缩减或改写。
+  </p>
+
+  <div class="copyright-block">
+    <p class="cb-label">Standard Footer Copy</p>
+    <pre>©2026 <strong>Nanasity</strong> 菠萝荟社区 AI 平台
+
+国内运营门户：<strong>nanas.com.cn</strong>
+品牌全域防御站：nanasity.com
+
+C端比价：菠萝爪 <strong>NanasClaw.com</strong>　社群会员：菠萝荟 <strong>NanasClub.com</strong>
+AI 对话：菠萝聊 <strong>NanasChat.com</strong>　　算力充值：菠萝卡 <strong>NanasCard.com</strong>
+社区地图：菠萝城 <strong>NanasCity.com</strong>
+
+核心品牌资产：Nanas
+（上市前完成 nanas.com 域名及全类商标收购）</pre>
+  </div>
+
+  <h3 style="font-size:16px;font-weight:700;color:var(--ink);margin:32px 0 12px;">简版 · 适用于 App / 小程序底部</h3>
+  <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px;">
+    <p style="font-size:14px;color:var(--ink-2);line-height:1.9;">
+      ©2026 Nanasity 菠萝社 · nanas.com.cn
+    </p>
+  </div>
+
+  <h3 style="font-size:16px;font-weight:700;color:var(--ink);margin:32px 0 12px;">单行 · 适用于海报 / 名片</h3>
+  <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px;">
+    <p style="font-size:14px;color:var(--ink-2);line-height:1.9;">
+      Nanasity 菠萝社 · 邻里 AI 消费生态圈 · nanas.com.cn
+    </p>
+  </div>
+</section>
+
+</div><!-- /wrap -->
+
+<!-- ── Footer ── -->
+<footer>
+  <p class="footer-brand">Nanas<span style="color:var(--green);">ity</span></p>
+  <p class="footer-copy">
+    ©2026 Nanasity 菠萝荟社区 AI 平台<br>
+    国内运营门户：nanas.com.cn · 品牌全域防御站：nanasity.com<br>
+    NanasClaw · NanasClub · NanasChat · NanasCard
+  </p>
+</footer>
+
+</body>
+</html>
