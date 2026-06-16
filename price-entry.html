@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>菠萝荟 · 录价工具</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, "PingFang SC", sans-serif;
+    background: #faf8f4;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: #c96442;
+    color: #fff;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .header h1 { font-size: 17px; font-weight: 700; }
+  .header .count { font-size: 13px; opacity: 0.85; }
+
+  /* 密码锁 */
+  #lockScreen {
+    position: fixed; inset: 0;
+    background: #faf8f4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 32px;
+    z-index: 100;
+  }
+
+  #lockScreen .icon { font-size: 48px; }
+  #lockScreen h2 { font-size: 20px; color: #1a1a1a; }
+  #lockScreen input {
+    width: 100%;
+    max-width: 320px;
+    padding: 14px 16px;
+    border: 2px solid #ede9e2;
+    border-radius: 12px;
+    font-size: 16px;
+    text-align: center;
+    letter-spacing: 2px;
+    outline: none;
+  }
+  #lockScreen input:focus { border-color: #c96442; }
+  #lockScreen button {
+    width: 100%;
+    max-width: 320px;
+    padding: 14px;
+    background: #c96442;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  #lockError { color: #e53e3e; font-size: 14px; min-height: 20px; }
+
+  /* 快捷品类 */
+  .quick-cats {
+    padding: 14px 16px 8px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .quick-cats::-webkit-scrollbar { display: none; }
+
+  .cat-chip {
+    flex-shrink: 0;
+    background: #fff;
+    border: 1.5px solid #ede9e2;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: #555;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .cat-chip.active {
+    background: #c96442;
+    border-color: #c96442;
+    color: #fff;
+  }
+
+  /* 录入表单 */
+  .form-card {
+    margin: 8px 16px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px;
+    border: 1.5px solid #ede9e2;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .form-group label {
+    font-size: 12px;
+    color: #888;
+    font-weight: 600;
+  }
+
+  .form-group input, .form-group select {
+    padding: 12px 12px;
+    border: 1.5px solid #ede9e2;
+    border-radius: 10px;
+    font-size: 15px;
+    background: #faf8f4;
+    outline: none;
+    width: 100%;
+    -webkit-appearance: none;
+  }
+
+  .form-group input:focus, .form-group select:focus {
+    border-color: #c96442;
+    background: #fff;
+  }
+
+  .form-group input.goods-input { font-size: 16px; }
+
+  .add-btn {
+    width: 100%;
+    padding: 14px;
+    background: #c96442;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    margin-top: 4px;
+    cursor: pointer;
+    transition: opacity 0.1s;
+  }
+
+  .add-btn:active { opacity: 0.8; }
+
+  /* 已录列表 */
+  .list-header {
+    padding: 16px 16px 8px;
+    font-size: 13px;
+    color: #888;
+    font-weight: 600;
+  }
+
+  .price-list {
+    margin: 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 120px;
+  }
+
+  .price-item {
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1.5px solid #ede9e2;
+  }
+
+  .price-item .goods-name { font-size: 15px; font-weight: 600; color: #1a1a1a; }
+  .price-item .goods-meta { font-size: 12px; color: #888; margin-top: 2px; }
+  .price-item .price-val { font-size: 20px; font-weight: 700; color: #c96442; }
+  .price-item .del-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #ccc;
+    padding: 4px 8px;
+    cursor: pointer;
+  }
+
+  /* 底部提交 */
+  .submit-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: #fff;
+    border-top: 1px solid #ede9e2;
+    padding: 12px 16px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .submit-info { flex: 1; font-size: 13px; color: #888; }
+  .submit-info strong { color: #c96442; font-size: 18px; }
+
+  .submit-btn {
+    padding: 13px 24px;
+    background: #1a1a1a;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .submit-btn:disabled { opacity: 0.4; }
+
+  /* Toast */
+  #toast {
+    position: fixed;
+    bottom: 90px; left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 200;
+  }
+  #toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- 密码锁 -->
+<div id="lockScreen">
+  <div class="icon">🔐</div>
+  <h2>录价工具</h2>
+  <input type="password" id="pwInput" placeholder="输入密钥" autocomplete="off">
+  <div id="lockError"></div>
+  <button onclick="unlock()">进入</button>
+</div>
+
+<!-- 主界面（锁定时隐藏）-->
+<div id="mainApp" style="display:none">
+
+  <div class="header">
+    <h1>📋 录价工具</h1>
+    <div class="count" id="countLabel">已录 0 条</div>
+  </div>
+
+  <!-- 快捷品类 -->
+  <div class="quick-cats">
+    <div class="cat-chip active" onclick="selectCat(this,'')">全部</div>
+    <div class="cat-chip" onclick="selectCat(this,'饮料')">饮料</div>
+    <div class="cat-chip" onclick="selectCat(this,'零食')">零食</div>
+    <div class="cat-chip" onclick="selectCat(this,'速食')">速食</div>
+    <div class="cat-chip" onclick="selectCat(this,'乳制品')">乳制品</div>
+    <div class="cat-chip" onclick="selectCat(this,'日用')">日用</div>
+    <div class="cat-chip" onclick="selectCat(this,'烟酒')">烟酒</div>
+    <div class="cat-chip" onclick="selectCat(this,'粮油')">粮油</div>
+    <div class="cat-chip" onclick="selectCat(this,'其他')">其他</div>
+  </div>
+
+  <!-- 表单 -->
+  <div class="form-card">
+    <div class="form-row">
+      <div class="form-group" style="flex:2">
+        <label>商品名称</label>
+        <input class="goods-input" id="goodsInput" type="text" placeholder="如：农夫山泉 550ml" autocomplete="off">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>价格（元）</label>
+        <input id="priceInput" type="number" step="0.1" placeholder="3.50" inputmode="decimal">
+      </div>
+      <div class="form-group">
+        <label>单位</label>
+        <select id="unitInput">
+          <option>瓶</option>
+          <option>罐</option>
+          <option>袋</option>
+          <option>盒</option>
+          <option>件</option>
+          <option>kg</option>
+          <option>L</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>库存</label>
+        <select id="stockInput">
+          <option>有货</option>
+          <option>紧张</option>
+          <option>无货</option>
+        </select>
+      </div>
+    </div>
+    <button class="add-btn" onclick="addItem()">＋ 加入清单</button>
+  </div>
+
+  <!-- 已录列表 -->
+  <div class="list-header" id="listHeader">清单为空，开始录入</div>
+  <div class="price-list" id="priceList"></div>
+
+  <!-- 底部提交 -->
+  <div class="submit-bar">
+    <div class="submit-info">待上传 <strong id="pendingCount">0</strong> 条</div>
+    <button class="submit-btn" id="submitBtn" onclick="submitAll()" disabled>上传到菠萝爪</button>
+  </div>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+const API = 'https://savela-api.donnyutamaindonesia.workers.dev/api/admin/price';
+let adminKey = '';
+let items = [];
+let currentCat = '';
+
+function unlock() {
+  const pw = document.getElementById('pwInput').value.trim();
+  if (!pw) return;
+  // 本地先存，提交时验证
+  adminKey = pw;
+  document.getElementById('lockScreen').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'block';
+  // 从 localStorage 恢复未提交数据
+  const saved = localStorage.getItem('price_draft');
+  if (saved) { items = JSON.parse(saved); renderList(); }
+}
+
+document.getElementById('pwInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') unlock();
+});
+
+function selectCat(el, cat) {
+  document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  currentCat = cat;
+  document.getElementById('goodsInput').focus();
+}
+
+function addItem() {
+  const goods = document.getElementById('goodsInput').value.trim();
+  const price = parseFloat(document.getElementById('priceInput').value);
+  const unit = document.getElementById('unitInput').value;
+  const stock = document.getElementById('stockInput').value;
+
+  if (!goods) { toast('请填写商品名称'); document.getElementById('goodsInput').focus(); return; }
+  if (!price || price <= 0) { toast('请填写正确的价格'); document.getElementById('priceInput').focus(); return; }
+
+  const tag = currentCat ? currentCat + '·超市调研' : '超市调研';
+  items.push({ goods, price, unit, stock, tag });
+  saveDraft();
+  renderList();
+
+  // 清空商品名和价格，保留品类和单位
+  document.getElementById('goodsInput').value = '';
+  document.getElementById('priceInput').value = '';
+  document.getElementById('goodsInput').focus();
+  toast('已加入清单 ✓');
+}
+
+function delItem(idx) {
+  items.splice(idx, 1);
+  saveDraft();
+  renderList();
+}
+
+function renderList() {
+  const list = document.getElementById('priceList');
+  const header = document.getElementById('listHeader');
+  const count = document.getElementById('countLabel');
+  const pending = document.getElementById('pendingCount');
+  const submitBtn = document.getElementById('submitBtn');
+
+  count.textContent = '已录 ' + items.length + ' 条';
+  pending.textContent = items.length;
+  submitBtn.disabled = items.length === 0;
+  header.textContent = items.length ? '清单（点 × 删除）' : '清单为空，开始录入';
+
+  list.innerHTML = items.map((item, i) => `
+    <div class="price-item">
+      <div>
+        <div class="goods-name">${item.goods}</div>
+        <div class="goods-meta">${item.unit} · ${item.stock} · ${item.tag}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="price-val">¥${item.price}</div>
+        <button class="del-btn" onclick="delItem(${i})">×</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function submitAll() {
+  if (items.length === 0) return;
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '上传中...';
+
+  try {
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: adminKey, items })
+    });
+    const data = await res.json();
+    if (data.success) {
+      toast('✅ 成功上传 ' + data.count + ' 条！');
+      items = [];
+      saveDraft();
+      renderList();
+    } else if (data.error === '无权限') {
+      toast('❌ 密钥错误，请重新输入');
+      adminKey = '';
+      document.getElementById('mainApp').style.display = 'none';
+      document.getElementById('lockScreen').style.display = 'flex';
+      document.getElementById('lockError').textContent = '密钥错误，请重试';
+    } else {
+      toast('上传失败：' + (data.error || '未知错误'));
+    }
+  } catch (e) {
+    toast('网络错误，请重试');
+  }
+
+  btn.disabled = false;
+  btn.textContent = '上传到菠萝爪';
+}
+
+function saveDraft() {
+  localStorage.setItem('price_draft', JSON.stringify(items));
+}
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+// Enter 键快速加入
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('mainApp').style.display !== 'none') {
+    const active = document.activeElement;
+    if (active.id === 'goodsInput' || active.id === 'priceInput') addItem();
+  }
+});
+</script>
+</body>
+</html>
