@@ -1,7 +1,8 @@
 const MODEL = 'ep-20260613123151-fm49q'
 const NANASCLAW_API = 'https://savela-api.donnyutamaindonesia.workers.dev'
 
-const SYSTEM = `你是 Nanas，由菠萝荟（邻里 AI 消费生态圈）提供的智能助手，服务于 nanas.com.cn。
+// 默认 Prompt（Langfuse 不可用时的兜底）
+const SYSTEM_DEFAULT = `你是 Nanas，由菠萝荟（邻里 AI 消费生态圈）提供的智能助手，服务于 nanas.com.cn。
 
 你的定位：邻里 AI 助手，帮用户解决日常生活、购物比价、社区活动等问题。
 
@@ -11,6 +12,50 @@ const SYSTEM = `你是 Nanas，由菠萝荟（邻里 AI 消费生态圈）提供
 - 简单问题一两句话搞定；复杂问题用列表或分段，清晰简洁
 - 如果上下文里有【菠萝爪比价数据】，直接用这个数据回答价格问题，不要说"我不知道"
 - 不确定的事情直说不确定，不要瞎编`
+
+// ── Langfuse Prompt 版本管理 ────────────────────
+// 从 Langfuse 拉最新 prompt（失败则用 SYSTEM_DEFAULT 兜底）
+async function fetchPromptFromLangfuse(env) {
+  const LANGFUSE_URL = env.LANGFUSE_URL
+  const LANGFUSE_PUBLIC_KEY = env.LANGFUSE_PUBLIC_KEY
+  if (!LANGFUSE_URL || !LANGFUSE_PUBLIC_KEY) return null
+  try {
+    const res = await fetch(
+      `${LANGFUSE_URL}/api/public/prompts/nanas-system`,
+      {
+        headers: {
+          'Authorization': `Basic ${btoa(LANGFUSE_PUBLIC_KEY + ':')}`,
+          'Accept': 'application/json',
+        },
+      }
+    )
+    if (!res.ok) return null
+    const data = await res.json()
+    return data?.prompt || null
+  } catch {
+    return null
+  }
+}
+
+// ── Langfuse 对话追踪（异步，不阻塞响应）───────────
+async function traceToLangfuse(env, traceData) {
+  const LANGFUSE_URL = env.LANGFUSE_URL
+  const LANGFUSE_SECRET_KEY = env.LANGFUSE_SECRET_KEY
+  const LANGFUSE_PUBLIC_KEY = env.LANGFUSE_PUBLIC_KEY
+  if (!LANGFUSE_URL || !LANGFUSE_SECRET_KEY) return
+  try {
+    await fetch(`${LANGFUSE_URL}/api/public/traces`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${btoa(LANGFUSE_PUBLIC_KEY + ':' + LANGFUSE_SECRET_KEY)}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(traceData),
+    })
+  } catch {
+    // 追踪失败不影响主链路
+  }
+}
 
 // ── 比价意图检测 ──────────────────────────────
 function extractCompareKeyword(messages) {
@@ -70,13 +115,14 @@ export async function onRequestPost(context) {
 
   const messages = body.messages || []
 
-  // 检测比价意图 → 调 NanasClaw → 注入上下文
-  let systemContent = SYSTEM
+  // 从 Langfuse 拉最新 Prompt，失败兜底默认值
+  const livePrompt = await fetchPromptFromLangfuse(context.env)
+  let systemContent = livePrompt || SYSTEM_DEFAULT
   const compareKeyword = extractCompareKeyword(messages)
   if (compareKeyword) {
     const compareData = await fetchCompareData(compareKeyword)
     const compareContext = formatCompareContext(compareData, compareKeyword)
-    systemContent = SYSTEM + '\n\n' + compareContext
+    systemContent = systemContent + '\n\n' + compareContext
   }
 
   const payload = JSON.stringify({
@@ -94,6 +140,15 @@ export async function onRequestPost(context) {
     },
     body: payload,
   })
+
+  // 异步追踪到 Langfuse（不阻塞流式响应）
+  const traceId = crypto.randomUUID()
+  context.waitUntil(traceToLangfuse(context.env, {
+    id: traceId,
+    name: 'nanas-chat',
+    input: messages[messages.length - 1]?.content || '',
+    metadata: { hasCompareKeyword: !!compareKeyword, model: MODEL },
+  }))
 
   return new Response(upstream.body, {
     status: upstream.status,
