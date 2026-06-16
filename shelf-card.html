@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>菠萝荟 · 货架卡片打印</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, "PingFang SC", sans-serif;
+    background: #f0ede8;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  h1 { font-size: 18px; color: #555; font-weight: 400; }
+
+  /* 控制栏 */
+  .controls {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px 20px;
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .controls label { font-size: 13px; color: #888; flex-shrink: 0; }
+  .controls input {
+    flex: 1;
+    min-width: 180px;
+    padding: 8px 12px;
+    border: 1.5px solid #ede9e2;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+  }
+  .controls input:focus { border-color: #c96442; }
+
+  .gen-btn {
+    padding: 9px 20px;
+    background: #c96442;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .print-btn {
+    padding: 9px 20px;
+    background: #1a1a1a;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  /* 卡片区（可打印） */
+  #cardsArea {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    width: 100%;
+    max-width: 800px;
+  }
+
+  /* 单张卡片 — A6 尺寸 105×148mm */
+  .shelf-card {
+    width: 297px;
+    height: 420px;
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+    page-break-inside: avoid;
+  }
+
+  .card-top {
+    width: 100%;
+    background: #c96442;
+    padding: 18px 20px 14px;
+    text-align: center;
+    color: #fff;
+  }
+
+  .card-top .emoji { font-size: 36px; line-height: 1; }
+  .card-top .brand { font-size: 22px; font-weight: 800; margin-top: 6px; letter-spacing: 0.04em; }
+  .card-top .slogan { font-size: 12px; opacity: 0.85; margin-top: 4px; }
+
+  .card-qr {
+    padding: 18px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card-qr canvas, .card-qr img {
+    border-radius: 8px;
+  }
+
+  .card-url {
+    font-size: 11px;
+    color: #aaa;
+    margin-top: -8px;
+    letter-spacing: 0.02em;
+  }
+
+  .card-benefits {
+    width: 100%;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .benefit-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #444;
+  }
+
+  .benefit-row .icon { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+
+  .card-footer {
+    width: 100%;
+    background: #faf8f4;
+    padding: 10px 20px;
+    font-size: 11px;
+    color: #aaa;
+    text-align: center;
+    border-top: 1px solid #ede9e2;
+  }
+
+  /* 打印样式 */
+  @media print {
+    body { background: #fff; padding: 0; gap: 0; }
+    h1, .controls { display: none !important; }
+    #cardsArea { gap: 0; }
+    .shelf-card {
+      box-shadow: none;
+      border-radius: 0;
+      border: 1px dashed #ccc;
+      page-break-inside: avoid;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>货架二维码卡片生成器</h1>
+
+<div class="controls">
+  <label>店铺名称：</label>
+  <input id="storeName" type="text" value="菠萝荟便利店" placeholder="如：1号柜台">
+  <button class="gen-btn" onclick="generateCard()">生成卡片</button>
+  <button class="print-btn" onclick="window.print()">🖨️ 打印</button>
+</div>
+
+<div id="cardsArea"></div>
+
+<script>
+function generateCard() {
+  const store = document.getElementById('storeName').value.trim() || '菠萝荟便利店';
+  const url = 'https://nanas.com.cn/scan?store=' + encodeURIComponent(store);
+
+  const area = document.getElementById('cardsArea');
+  area.innerHTML = '';
+
+  const card = document.createElement('div');
+  card.className = 'shelf-card';
+  card.innerHTML = `
+    <div class="card-top">
+      <div class="emoji">🍍</div>
+      <div class="brand">菠萝荟</div>
+      <div class="slogan">邻里 AI · 附近比价 · 社区好物</div>
+    </div>
+    <div class="card-qr">
+      <canvas id="qrCanvas"></canvas>
+    </div>
+    <div class="card-url">${url}</div>
+    <div class="card-benefits">
+      <div class="benefit-row"><span class="icon">💬</span><span>问 Nanas AI，一句话找答案</span></div>
+      <div class="benefit-row"><span class="icon">🦞</span><span>附近便利店实时比价</span></div>
+      <div class="benefit-row"><span class="icon">🏪</span><span>邻里集市，好东西不出小区</span></div>
+    </div>
+    <div class="card-footer">扫码免费使用 · nanas.com.cn</div>
+  `;
+
+  area.appendChild(card);
+
+  // 生成 QR code
+  QRCode.toCanvas(document.getElementById('qrCanvas'), url, {
+    width: 160,
+    margin: 1,
+    color: { dark: '#1a1a1a', light: '#ffffff' }
+  }, err => { if (err) console.error(err); });
+}
+
+// 默认生成一张
+generateCard();
+</script>
+
+</body>
+</html>
