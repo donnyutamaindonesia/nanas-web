@@ -1,5 +1,13 @@
 # 菠萝荟 · nanas.com.cn 项目说明
 
+## 设计规范（改UI前必读）
+读 `.impeccable.md`。设计原则摘要：
+- 参考：**微信本体** — 极简留白，字重层次，不靠卡片/阴影
+- 情绪：**聪明轻快** — 一秒找答案
+- 橙色只给最重要的1个动作，其余全中性
+- Web端字体：Noto Sans SC + ZCOOL KuaiLe（品牌词）
+- 禁止：AI模板卡片、gradient text、border-left彩色条、glassmorphism
+
 ## 背景
 菠萝荟（Nanasity）是邻里 AI 消费生态圈，服务社区居民和便利店店主。
 本项目是官网 + AI 对话入口，部署在 Cloudflare Pages（项目名：nanas-3d）。
