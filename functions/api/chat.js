@@ -1,5 +1,5 @@
 const MODEL = 'ep-20260613123151-fm49q'
-const NANASCLAW_API = 'https://savela-api.donnyutamaindonesia.workers.dev'
+const NANASCLAW_API = 'https://api.nanasclaw.com'
 
 // 默认 Prompt（Langfuse 不可用时的兜底）
 const SYSTEM_DEFAULT = `你是 Nanas，由菠萝荟（邻里 AI 消费生态圈）提供的智能助手，服务于 nanas.com.cn。
@@ -87,7 +87,8 @@ async function fetchCompareData(keyword) {
 // ── 格式化比价结果为上下文 ─────────────────────
 function formatCompareContext(data, keyword) {
   if (!data?.shops?.length) {
-    return `【菠萝爪比价数据】暂未找到"${keyword}"的附近门店价格，可直接去 NanasClaw.com 查询。`
+    // 无数据时不注入任何 context，让 AI 自然引导用户输入具体商品
+    return null
   }
   const shopLines = data.shops.slice(0, 5).map(s => {
     const shopName = s.shop_name || s.name || '附近门店'
@@ -123,7 +124,9 @@ export async function onRequestPost(context) {
   if (compareKeyword) {
     const compareData = await fetchCompareData(compareKeyword)
     const compareContext = formatCompareContext(compareData, compareKeyword)
-    systemContent = systemContent + '\n\n' + compareContext
+    if (compareContext) {
+      systemContent = systemContent + '\n\n' + compareContext
+    }
   }
 
   const payload = JSON.stringify({
