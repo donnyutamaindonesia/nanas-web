@@ -126,9 +126,8 @@ export async function onRequestPost(context) {
 
   const messages = body.messages || []
 
-  // 从 Langfuse 拉最新 Prompt，失败兜底默认值
-  const livePrompt = await fetchPromptFromLangfuse(context.env)
-  let systemContent = livePrompt || SYSTEM_DEFAULT
+  // ponytail: Langfuse 暂时跳过，直接用 SYSTEM_DEFAULT，等 Langfuse 密码找回后再接回
+  let systemContent = SYSTEM_DEFAULT
   const compareKeyword = extractCompareKeyword(messages)
   if (compareKeyword) {
     const compareData = await fetchCompareData(compareKeyword)
