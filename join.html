@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>菠萝荟 · 楼下比美团便宜</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+    background: #FAF8F5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    width: 100%;
+    background: #E8611A;
+    padding: 40px 24px 32px;
+    text-align: center;
+    color: #fff;
+  }
+  .hero .tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .hero p {
+    font-size: 15px;
+    opacity: 0.9;
+    line-height: 1.6;
+  }
+
+  /* ── 价格对比卡片 ── */
+  .price-card {
+    margin: -20px 20px 0;
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+  .price-card .label {
+    font-size: 13px;
+    color: #999;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  .price-item {
+    flex: 1;
+    text-align: center;
+    padding: 14px 10px;
+    border-radius: 12px;
+    background: #FAF8F5;
+  }
+  .price-item.highlight {
+    background: #FFF4ED;
+    border: 1.5px solid #E8611A;
+  }
+  .price-item .shop {
+    font-size: 12px;
+    color: #999;
+    margin-bottom: 6px;
+  }
+  .price-item.highlight .shop {
+    color: #E8611A;
+    font-weight: 600;
+  }
+  .price-item .price {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+  }
+  .price-item.highlight .price {
+    color: #E8611A;
+  }
+  .price-item .unit {
+    font-size: 12px;
+    color: #999;
+    margin-top: 2px;
+  }
+  .vs {
+    font-size: 13px;
+    color: #ccc;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .save-badge {
+    text-align: center;
+    margin-top: 14px;
+    font-size: 14px;
+    color: #E8611A;
+    font-weight: 600;
+  }
+
+  /* ── 内容区 ── */
+  .section {
+    width: 100%;
+    max-width: 480px;
+    padding: 0 20px;
+    margin-top: 20px;
+  }
+
+  /* ── 步骤说明 ── */
+  .steps {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+  }
+  .steps h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 16px;
+  }
+  .step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .step:last-child { margin-bottom: 0; }
+  .step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #E8611A;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-text {
+    flex: 1;
+    padding-top: 4px;
+  }
+  .step-text strong {
+    display: block;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 2px;
+  }
+  .step-text span {
+    font-size: 13px;
+    color: #999;
+    line-height: 1.5;
+  }
+
+  /* ── CTA ── */
+  .cta-section {
+    text-align: center;
+    padding: 24px 20px;
+    width: 100%;
+    max-width: 480px;
+  }
+  .qr-wrapper {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .qr-wrapper img {
+    width: 160px;
+    height: 160px;
+    border-radius: 8px;
+  }
+  .qr-placeholder {
+    width: 160px;
+    height: 160px;
+    border-radius: 8px;
+    border: 2px dashed #E8611A;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #E8611A;
+    font-size: 13px;
+    margin: 0 auto;
+    gap: 8px;
+  }
+  .qr-placeholder .icon { font-size: 32px; }
+  .qr-label {
+    font-size: 14px;
+    color: #666;
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+  .btn-primary {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background: #E8611A;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+  .btn-sub {
+    display: block;
+    text-align: center;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #999;
+  }
+
+  /* ── 底部 ── */
+  .footer {
+    padding: 24px;
+    text-align: center;
+    font-size: 12px;
+    color: #bbb;
+  }
+  .footer span { color: #E8611A; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="tag">📍 楼下便利店 · 菠萝荟</div>
+  <h1>椰子水<br>比美团便宜</h1>
+  <p>不用等外卖，楼下拿走<br>扫码进群，每天抢最低价</p>
+</div>
+
+<div style="width:100%;max-width:480px;padding:0 20px;">
+  <div class="price-card">
+    <div class="label">今日价格对比 · 椰子水 330ml</div>
+    <div class="price-row">
+      <div class="price-item highlight">
+        <div class="shop">🏪 楼下便利店</div>
+        <div class="price">¥6.8</div>
+        <div class="unit">即买即拿</div>
+      </div>
+      <div class="vs">vs</div>
+      <div class="price-item">
+        <div class="shop">外卖平台</div>
+        <div class="price">¥9.9</div>
+        <div class="unit">+ 配送费</div>
+      </div>
+    </div>
+    <div class="save-badge">📦 进群成员 省 ¥3.1 · 今日还剩 <span id="stock">--</span> 瓶</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="steps">
+    <h3>怎么参与？</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text">
+        <strong>扫码进群</strong>
+        <span>加入小区专属福利群，每天早上推送最新比价</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text">
+        <strong>群里预定</strong>
+        <span>发消息说要几瓶，老板收快递回来就给你留好</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text">
+        <strong>楼下取货</strong>
+        <span>不用等外卖，随时来拿，现付现走</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cta-section">
+  <div class="qr-wrapper">
+    <!-- 把下面这个 div 换成 <img src="群二维码.png"> -->
+    <div class="qr-placeholder" id="qr-area">
+      <div class="icon">📱</div>
+      <div>群二维码</div>
+      <div style="font-size:11px;color:#ccc">老板更新后显示</div>
+    </div>
+    <div class="qr-label">微信扫码 · 加入小区福利群<br>100位邻居已加入</div>
+  </div>
+  <a href="weixin://" class="btn-primary">打开微信扫码进群</a>
+  <span class="btn-sub">或截图保存二维码，微信扫一扫</span>
+</div>
+
+<div class="footer">
+  菠萝荟 · 邻里 AI 消费生态<br>
+  <span>nanas.com.cn</span> · 数据每日更新
+</div>
+
+<script>
+// 动态显示库存（从 API 拉，失败就显示默认值）
+fetch('https://api.nanasclaw.com/api/compare?q=椰子水&type=local')
+  .then(r => r.json())
+  .then(d => {
+    // ponytail: 直接用任意返回数据，失败静默
+    const stock = d?.stock ?? d?.results?.[0]?.stock;
+    if (stock != null) document.getElementById('stock').textContent = stock;
+    else document.getElementById('stock').textContent = '若干';
+  })
+  .catch(() => { document.getElementById('stock').textContent = '若干'; });
+</script>
+
+</body>
+</html>
