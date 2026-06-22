@@ -260,6 +260,51 @@
   .chip:hover { border-color: #c96442; color: #c96442; background: #fff8f5; }
   .chip svg { opacity: .6; flex-shrink: 0; }
 
+  /* ── 妙招广场 ── */
+  #miaozhao {
+    width: 100%;
+    max-width: 680px;
+    margin: 20px auto 0;
+  }
+  #miaozhao .mz-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #aaa;
+    margin-bottom: 12px;
+    padding: 0 2px;
+  }
+  #miaozhao .mz-header span { color: #c96442; font-weight: 600; font-size: 12px; }
+  .mz-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  @media (max-width: 500px) { .mz-grid { grid-template-columns: repeat(2, 1fr); } }
+  .mz-card {
+    border-radius: 14px;
+    padding: 16px 14px 14px;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border: 1px solid transparent;
+  }
+  .mz-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.09); }
+  .mz-card .mz-icon { font-size: 22px; line-height: 1; }
+  .mz-card .mz-title { font-size: 13px; font-weight: 600; color: #333; }
+  .mz-card .mz-desc { font-size: 11.5px; color: #888; line-height: 1.4; }
+
+  .mz-c1 { background: #fff8f0; border-color: #f5dfc8; }
+  .mz-c2 { background: #f0faf4; border-color: #c8e6d0; }
+  .mz-c3 { background: #f0f4ff; border-color: #c8d4f5; }
+  .mz-c4 { background: #fff5f5; border-color: #f5cece; }
+  .mz-c5 { background: #f5f0ff; border-color: #d4c8f5; }
+  .mz-c6 { background: #fffbf0; border-color: #f0e4c0; }
+
   /* ── 输入框 ── */
   .input-card {
     width: 100%;
@@ -558,7 +603,7 @@
       </div>
     </div>
 
-    <!-- 快捷芯片（输入框下方，Claude 风格）-->
+    <!-- 快捷芯片 -->
     <div id="chips" style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
       <a href="#" class="chip" onclick="setPrompt('帮我聊聊今天有什么新鲜事');return false;">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
@@ -576,6 +621,46 @@
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
         荟充值
       </a>
+    </div>
+
+    <!-- 妙招广场 -->
+    <div id="miaozhao">
+      <div class="mz-header">
+        <span>妙招广场</span>
+        · 点击即用比价场景
+      </div>
+      <div class="mz-grid">
+        <a href="#" class="mz-card mz-c1" onclick="sendPrompt('椰子水今日最低价在哪家？');return false;">
+          <div class="mz-icon">🥥</div>
+          <div class="mz-title">椰子水行情</div>
+          <div class="mz-desc">查今日最低价，比超市便宜多少</div>
+        </a>
+        <a href="#" class="mz-card mz-c2" onclick="sendPrompt('大米5kg附近便利店最低价多少？');return false;">
+          <div class="mz-icon">🍚</div>
+          <div class="mz-title">大米比价</div>
+          <div class="mz-desc">5kg大米哪家最实惠</div>
+        </a>
+        <a href="#" class="mz-card mz-c3" onclick="sendPrompt('啤酒今日特价，青岛雪花哪家便宜？');return false;">
+          <div class="mz-icon">🍺</div>
+          <div class="mz-title">啤酒特价</div>
+          <div class="mz-desc">青岛/雪花今日最低价</div>
+        </a>
+        <a href="#" class="mz-card mz-c4" onclick="sendPrompt('食用油5L最低价，附近哪家有货？');return false;">
+          <div class="mz-icon">🫙</div>
+          <div class="mz-title">食用油比价</div>
+          <div class="mz-desc">5L装食用油最低价</div>
+        </a>
+        <a href="#" class="mz-card mz-c5" onclick="sendPrompt('矿泉水和牛奶附近最低价是多少？');return false;">
+          <div class="mz-icon">🥛</div>
+          <div class="mz-title">饮品最低价</div>
+          <div class="mz-desc">矿泉水/牛奶今日价格</div>
+        </a>
+        <a href="#" class="mz-card mz-c6" onclick="sendPrompt('本周附近便利店有哪些特价活动和优惠券？');return false;">
+          <div class="mz-icon">🎁</div>
+          <div class="mz-title">本周特价</div>
+          <div class="mz-desc">查活动、优惠券、团购</div>
+        </a>
+      </div>
     </div>
   </div>
 
@@ -623,8 +708,16 @@ function setPrompt(text) {
   input.focus()
 }
 
-// 发送后隐藏芯片
-const chipsEl = document.getElementById('chips')
+// 发送后隐藏芯片和妙招区
+const chipsEl    = document.getElementById('chips')
+const miaozhaoEl = document.getElementById('miaozhao')
+
+function sendPrompt(text) {
+  input.value = text
+  chipsEl.style.display = 'none'
+  miaozhaoEl.style.display = 'none'
+  sendMessage()
+}
 
 let chatMode = 'default'
 
@@ -632,6 +725,7 @@ function newChat() {
   chatFeed.innerHTML = '';
   greeting.style.display = '';
   chipsEl.style.display = 'flex';
+  miaozhaoEl.style.display = '';
   input.value = '';
   pendingImage = null;
   document.getElementById('img-preview').style.display = 'none';
@@ -712,6 +806,7 @@ function setBusy(busy) {
 function addMsg(role, text) {
   if (greeting.style.display !== 'none') greeting.style.display = 'none'
   if (chipsEl && chipsEl.style.display !== 'none') chipsEl.style.display = 'none'
+  if (miaozhaoEl && miaozhaoEl.style.display !== 'none') miaozhaoEl.style.display = 'none'
   const div = document.createElement('div')
   div.className = `msg ${role}`
   const bubble = document.createElement('div')
