@@ -225,6 +225,77 @@
 
   .submit-btn:disabled { opacity: 0.4; }
 
+  /* 标签切换 */
+  .tab-bar {
+    display: flex;
+    margin: 0 16px 4px;
+    background: #f5f0eb;
+    border-radius: 10px;
+    padding: 3px;
+    gap: 3px;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #888;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .tab-btn.active {
+    background: #fff;
+    color: #c96442;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  }
+
+  /* 洞察面板 */
+  #insightPanel { padding: 0 16px 120px; }
+  .insight-section { margin-top: 16px; }
+  .insight-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #888;
+    letter-spacing: .5px;
+    margin-bottom: 10px;
+  }
+  .insight-item {
+    background: #fff;
+    border: 1.5px solid #ede9e2;
+    border-radius: 12px;
+    padding: 11px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .insight-item .kw { flex: 1; font-size: 14px; font-weight: 600; color: #1a1a1a; }
+  .insight-item .cnt { font-size: 13px; color: #c96442; font-weight: 700; }
+  .insight-item .badge {
+    font-size: 11px;
+    background: #fff3ee;
+    color: #c96442;
+    padding: 2px 8px;
+    border-radius: 8px;
+  }
+  .insight-item .badge.gap { background: #fff7e0; color: #d48806; }
+  .insight-empty { font-size: 13px; color: #bbb; padding: 20px 0; text-align: center; }
+  #insightRefresh {
+    width: 100%;
+    padding: 12px;
+    background: #f5f0eb;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+
   /* Toast */
   #toast {
     position: fixed;
@@ -259,9 +330,18 @@
 <div id="mainApp" style="display:none">
 
   <div class="header">
-    <h1>📋 录价工具</h1>
+    <h1>📋 菠萝荟后台</h1>
     <div class="count" id="countLabel">已录 0 条</div>
   </div>
+
+  <!-- 标签切换 -->
+  <div class="tab-bar" style="margin-top:12px">
+    <button class="tab-btn active" onclick="switchTab('price',this)">录价</button>
+    <button class="tab-btn" onclick="switchTab('insight',this)">今日洞察</button>
+  </div>
+
+  <!-- 录价面板 -->
+  <div id="pricePanel">
 
   <!-- 快捷品类 -->
   <div class="quick-cats">
@@ -323,15 +403,70 @@
     <button class="submit-btn" id="submitBtn" onclick="submitAll()" disabled>上传到菠萝爪</button>
   </div>
 
+  </div><!-- /pricePanel -->
+
+  <!-- 洞察面板 -->
+  <div id="insightPanel" style="display:none">
+    <div class="insight-section">
+      <div class="insight-title">今日热搜 TOP</div>
+      <div id="hotList"><div class="insight-empty">加载中...</div></div>
+    </div>
+    <div class="insight-section">
+      <div class="insight-title">需求缺口（热搜但你家没录）</div>
+      <div id="gapList"><div class="insight-empty">加载中...</div></div>
+    </div>
+    <button id="insightRefresh" onclick="loadInsights()">↻ 刷新数据</button>
+  </div>
+
 </div>
 
 <div id="toast"></div>
 
 <script>
-const API = 'https://savela-api.donnyutamaindonesia.workers.dev/api/admin/price';
+const API = 'https://api.nanasclaw.com/api/admin/price';
+const INSIGHT_API = 'https://api.nanasclaw.com';
 let adminKey = '';
 let items = [];
 let currentCat = '';
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('pricePanel').style.display = tab === 'price' ? '' : 'none';
+  document.getElementById('insightPanel').style.display = tab === 'insight' ? '' : 'none';
+  if (tab === 'insight') loadInsights();
+}
+
+async function loadInsights() {
+  const today = new Date().toISOString().slice(0,10);
+  document.getElementById('hotList').innerHTML = '<div class="insight-empty">加载中...</div>';
+  document.getElementById('gapList').innerHTML = '<div class="insight-empty">加载中...</div>';
+  try {
+    const [statsRes, insightRes] = await Promise.all([
+      fetch(`${INSIGHT_API}/api/shop/daily-stats?date=${today}`).then(r => r.json()),
+      fetch(`${INSIGHT_API}/api/shop/insights?shop_id=1`).then(r => r.json()),
+    ]);
+    // 热搜列表
+    const hot = statsRes.queries || [];
+    document.getElementById('hotList').innerHTML = hot.length
+      ? hot.map(q => `<div class="insight-item">
+          <span class="kw">${q.keyword}</span>
+          <span class="cnt">${q.cnt}次</span>
+        </div>`).join('')
+      : '<div class="insight-empty">今日暂无搜索记录</div>';
+    // 需求缺口
+    const gaps = insightRes.demand_gaps || [];
+    document.getElementById('gapList').innerHTML = gaps.length
+      ? gaps.map(g => `<div class="insight-item">
+          <span class="kw">${g.keyword}</span>
+          <span class="cnt">${g.cnt}次</span>
+          <span class="badge gap">未录价</span>
+        </div>`).join('')
+      : '<div class="insight-empty">暂无缺口，你家商品已覆盖热搜 ✓</div>';
+  } catch(e) {
+    document.getElementById('hotList').innerHTML = '<div class="insight-empty">加载失败：' + e.message + '</div>';
+  }
+}
 
 function unlock() {
   const pw = document.getElementById('pwInput').value.trim();

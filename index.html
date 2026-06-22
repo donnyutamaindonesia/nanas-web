@@ -298,6 +298,47 @@
   .mz-card .mz-title { font-size: 13px; font-weight: 600; color: #333; }
   .mz-card .mz-desc { font-size: 11.5px; color: #888; line-height: 1.4; }
 
+  /* ── 比价卡片 ── */
+  .price-card {
+    background: #fff;
+    border: 1px solid #f0d4c0;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 8px;
+    max-width: 440px;
+  }
+  .price-card-head {
+    padding: 9px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #c96442;
+    background: #fff8f4;
+    border-bottom: 1px solid #f0d4c0;
+  }
+  .pr-row {
+    display: flex;
+    align-items: center;
+    padding: 9px 14px;
+    gap: 8px;
+    border-bottom: 1px solid #f5f0eb;
+    font-size: 13px;
+  }
+  .pr-row:last-of-type { border-bottom: none; }
+  .pr-row.pr-best { background: #fff8f4; }
+  .pr-medal { width: 20px; text-align: center; flex-shrink: 0; }
+  .pr-name { flex: 1; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pr-price { font-weight: 700; color: #c96442; flex-shrink: 0; }
+  .pr-dist { font-size: 11px; color: #bbb; flex-shrink: 0; }
+  .pr-act { font-size: 11px; background: #fff7e0; color: #d48806; padding: 1px 6px; border-radius: 6px; flex-shrink: 0; }
+  .price-card-foot {
+    padding: 9px 14px;
+    font-size: 12px;
+    color: #888;
+    border-top: 1px solid #f0d4c0;
+    background: #faf8f4;
+    line-height: 1.5;
+  }
+
   .mz-c1 { background: #fff8f0; border-color: #f5dfc8; }
   .mz-c2 { background: #f0faf4; border-color: #c8e6d0; }
   .mz-c3 { background: #f0f4ff; border-color: #c8d4f5; }
@@ -679,6 +720,36 @@ let history = []
 let pendingImageB64 = null
 let pendingImageMime = null
 
+const _COMPARE_API = 'https://api.nanasclaw.com/api/compare'
+const _COMPARE_RE = /比价|多少钱|哪家|便宜|最低价|价格|哪里买|在哪买|超市|零食|饮料|大米|椰子|可乐|矿泉水|啤酒|牛奶|食用油|酱油|纸巾|卫生/
+
+function _extractKw(text) {
+  const c = text.replace(/帮我|请|查|找|看看|比价|附近|便利店|超市|多少钱|哪家|便宜|价格|哪里|在哪|一下|吗|呢|\?|？/g, '').trim()
+  return c.slice(0, 20) || text.slice(0, 6)
+}
+
+function _renderPriceCard(data, kw, container) {
+  if (!data?.shops?.length) return
+  const medals = ['🥇','🥈','🥉']
+  const rows = data.shops.slice(0, 5).map((s, i) => {
+    const name = s.name || '参考价'
+    const dist = s.distance_m ? `${s.distance_m}m` : ''
+    const act = s.activity ? `<span class="pr-act">${s.activity}</span>` : ''
+    return `<div class="pr-row${i===0?' pr-best':''}">
+      <span class="pr-medal">${medals[i]||String(i+1)}</span>
+      <span class="pr-name">${name}</span>
+      ${act}
+      <span class="pr-price">¥${s.price}/${s.unit||'件'}</span>
+      ${dist?`<span class="pr-dist">${dist}</span>`:''}
+    </div>`
+  }).join('')
+  const foot = data.ai_suggest ? `<div class="price-card-foot">${data.ai_suggest}</div>` : ''
+  const card = document.createElement('div')
+  card.className = 'price-card'
+  card.innerHTML = `<div class="price-card-head">📊 ${kw} · 比价结果（${data.result_count}家）</div>${rows}${foot}`
+  container.appendChild(card)
+}
+
 function handleImage(e) {
   const file = e.target.files[0]
   if (!file) return
@@ -825,6 +896,16 @@ async function send() {
   input.value = ''
   input.style.height = 'auto'
 
+  // 比价意图检测 — 并行拉数据，不等它完成再发消息
+  let _compareFetch = null, _compareKw = null
+  if (!pendingImageB64 && _COMPARE_RE.test(text)) {
+    _compareKw = _extractKw(text)
+    if (_compareKw) {
+      _compareFetch = fetch(`${_COMPARE_API}?keyword=${encodeURIComponent(_compareKw)}`)
+        .then(r => r.ok ? r.json() : null).catch(() => null)
+    }
+  }
+
   let userContent
   if (pendingImageB64) {
     userContent = [
@@ -885,6 +966,12 @@ async function send() {
     history.push({ role: 'assistant', content: aiText })
     bubble.innerHTML = marked.parse(aiText)
     cursor.remove()
+
+    // 渲染比价卡片（AI 回复完成后追加）
+    if (_compareFetch) {
+      const _cdata = await _compareFetch
+      if (_cdata?.result_count > 0) _renderPriceCard(_cdata, _compareKw, bubble.parentElement)
+    }
 
   } catch (e) {
     cursor.remove()
