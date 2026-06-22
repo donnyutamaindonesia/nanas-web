@@ -724,8 +724,10 @@ const _COMPARE_API = 'https://api.nanasclaw.com/api/compare'
 const _COMPARE_RE = /比价|多少钱|哪家|便宜|最低价|价格|哪里买|在哪买|超市|零食|饮料|大米|椰子|可乐|矿泉水|啤酒|牛奶|食用油|酱油|纸巾|卫生/
 
 function _extractKw(text) {
-  const c = text.replace(/帮我|请|查|找|看看|比价|附近|便利店|超市|多少钱|哪家|便宜|价格|哪里|在哪|一下|吗|呢|\?|？/g, '').trim()
-  return c.slice(0, 20) || text.slice(0, 6)
+  const stripped = text.replace(/帮我|请|查|找|看看|比价|附近|便利店|超市|多少钱|多少|哪家|便宜|最低价|最低|最便宜|价格|哪里|在哪|一下|行情|今日|今天|特价|的|吗|呢|\?|？/g, '').trim()
+  // 取前4个CJK字符作为核心商品词（避免规格信息干扰LIKE匹配）
+  const cjk = stripped.match(/[\u4e00-\u9fff]{2,4}/)
+  return cjk?.[0] || stripped.slice(0, 6) || text.slice(0, 4)
 }
 
 function _renderPriceCard(data, kw, container) {
